@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Street Talk Brief Builder</title>
+  <style>
+    :root {
+      --bg: #0f0f11; --surface: #18181b; --surface2: #232328; --surface3: #2e2e35;
+      --border: #3a3a44; --text: #f4f4f5; --text2: #a1a1aa; --text3: #71717a;
+      --accent: #6366f1; --accent-hover: #4f52e0; --accent-light: rgba(99,102,241,0.15);
+      --green: #22c55e; --green-light: rgba(34,197,94,0.12);
+      --yellow: #eab308; --yellow-light: rgba(234,179,8,0.12);
+      --red: #ef4444; --red-light: rgba(239,68,68,0.12);
+      --radius: 10px; --radius-sm: 6px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.5; height: 100vh; display: flex; overflow: hidden; }
+    .main-container { display: flex; width: 100%; height: 100%; }
+
+    /* SIDEBAR */
+    .sidebar { width: 220px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; padding: 16px 0; flex-shrink: 0; }
+    .sidebar-logo { padding: 4px 20px 20px; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+    .sidebar-logo .logo-text { font-size: 16px; font-weight: 700; color: var(--text); }
+    .sidebar-logo .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .sidebar-section { padding: 16px 20px 6px; font-size: 10px; text-transform: uppercase; color: var(--text3); font-weight: 700; letter-spacing: 0.8px; }
+    .sidebar-item { padding: 9px 20px; cursor: pointer; color: var(--text2); display: flex; align-items: center; gap: 10px; transition: all 0.15s; font-size: 13.5px; }
+    .sidebar-item:hover { background: var(--surface2); color: var(--text); }
+    .sidebar-item.active { background: var(--accent-light); color: var(--accent); font-weight: 600; border-right: 2px solid var(--accent); }
+    .sidebar-item .icon { font-size: 16px; width: 20px; text-align: center; }
+    .sidebar-item .badge { margin-left: auto; background: var(--surface3); padding: 1px 7px; border-radius: 10px; font-size: 11px; }
+
+    /* CONTENT */
+    .content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; min-height: 64px; }
+    .header-title { font-size: 18px; font-weight: 700; }
+    .header-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+    .main-content { flex: 1; overflow-y: auto; padding: 28px; }
+
+    /* BUTTONS */
+    .btn { padding: 9px 16px; border: none; border-radius: var(--radius-sm); cursor: pointer; font-weight: 600; transition: all 0.15s; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { background: var(--accent-hover); }
+    .btn-primary:disabled { background: var(--surface3); color: var(--text3); cursor: not-allowed; }
+    .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--surface3); }
+    .btn-green { background: var(--green); color: #0a1a0a; }
+    .btn-green:hover { background: #16a34a; }
+    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn-danger { background: var(--red-light); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+    .btn-danger:hover { background: var(--red); color: white; }
+
+    /* FORMS */
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: block; font-weight: 600; margin-bottom: 7px; color: var(--text); font-size: 13px; }
+    .form-hint { font-size: 11px; color: var(--text3); margin-top: 4px; }
+    .form-input, .form-textarea, .form-select {
+      width: 100%; padding: 9px 12px; background: var(--surface2);
+      border: 1px solid var(--border); color: var(--text);
+      border-radius: var(--radius-sm); font-family: inherit; font-size: 13px;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus { outline: none; border-color: var(--accent); }
+    .form-textarea { min-height: 90px; resize: vertical; }
+    .form-select option { background: var(--surface2); }
+
+    /* CARDS */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .card + .card { margin-top: 16px; }
+    .card-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .card-sub { font-size: 12px; color: var(--text3); }
+
+    /* GRID */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .grid-auto { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+
+    /* ANGLE CARDS */
+    .angle-card { background: var(--surface2); border: 2px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.15s; }
+    .angle-card:hover { border-color: var(--accent); }
+    .angle-card.selected { border-color: var(--accent); background: var(--accent-light); }
+    .angle-card .angle-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .angle-card .angle-cat { font-size: 11px; color: var(--accent); text-transform: uppercase; font-weight: 600; letter-spacing: 0.4px; margin-bottom: 8px; }
+    .angle-card .angle-desc { font-size: 12px; color: var(--text2); line-height: 1.4; }
+    .angle-card .angle-actions { margin-top: 10px; display: flex; gap: 8px; }
+
+    /* SHOT CARDS */
+    .shot-chip { background: var(--surface3); border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; font-size: 12px; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 5px; }
+    .shot-chip:hover { border-color: var(--accent); }
+    .shot-chip.selected { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+    /* TAGS */
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .tag-aroll { background: rgba(99,102,241,0.15); color: #818cf8; }
+    .tag-broll { background: rgba(234,179,8,0.15); color: var(--yellow); }
+    .tag-both { background: rgba(34,197,94,0.15); color: var(--green); }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
+    .empty-state .empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state h3 { font-size: 16px; color: var(--text2); margin-bottom: 8px; }
+
+    /* MODAL */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; width: 480px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+    .modal-wide { width: 640px; }
+    .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--text3); margin-bottom: 24px; }
+    .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 24px; }
+
+    /* STEPS INDICATOR */
+    .step-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border); padding: 4px 12px; border-radius: 20px; font-size: 12px; color: var(--text3); margin-bottom: 20px; }
+    .step-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+    /* PROJECT LIST */
+    .project-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; display: flex; align-items: center; gap: 16px; margin-bottom: 10px; transition: border-color 0.15s; }
+    .project-row:hover { border-color: var(--border); }
+    .project-row .proj-info { flex: 1; }
+    .project-row .proj-name { font-weight: 700; font-size: 15px; }
+    .project-row .proj-meta { font-size: 12px; color: var(--text3); margin-top: 2px; }
+    .status-pill { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; }
+    .status-draft { background: var(--surface3); color: var(--text3); }
+    .status-ready { background: var(--yellow-light); color: var(--yellow); }
+    .status-published { background: var(--green-light); color: var(--green); }
+
+    /* BRIEF GENERATION */
+    .script-block { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; }
+    .script-angle { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .script-cat { font-size: 11px; color: var(--accent); text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+    .script-text { font-size: 13px; color: var(--text2); line-height: 1.7; white-space: pre-wrap; }
+
+    /* VIDEO PREVIEW */
+    .video-embed { margin-top: 10px; border-radius: var(--radius-sm); overflow: hidden; background: #000; aspect-ratio: 16/9; }
+    .video-embed iframe { width: 100%; height: 100%; border: none; }
+    .video-placeholder { background: var(--surface3); border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 14px; font-size: 12px; color: var(--text3); text-align: center; margin-top: 8px; }
+
+    /* PRESENTATION PAGE */
+    #presentation-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; overflow-y: auto; display: none; }
+    .pres-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .pres-body { max-width: 860px; margin: 0 auto; padding: 40px 28px; }
+    .pres-angle { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 26px; margin-bottom: 24px; }
+    .pres-angle-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .pres-angle-name { font-size: 18px; font-weight: 700; }
+    .pres-section-label { font-size: 11px; text-transform: uppercase; color: var(--text3); font-weight: 700; letter-spacing: 0.5px; margin: 14px 0 8px; }
+    .shot-row { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
+    .shot-row .shot-name { font-weight: 600; font-size: 13px; }
+    .shot-row .shot-note { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+    /* COMMENT SECTION */
+    .comment-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-top: 14px; }
+    .comment-item { border-bottom: 1px solid var(--border); padding: 10px 0; }
+    .comment-item:last-child { border-bottom: none; }
+    .comment-meta { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+    .comment-text { font-size: 13px; }
+    .comment-add { display: flex; gap: 8px; margin-top: 10px; }
+    .comment-add input { flex: 1; padding: 8px 12px; background: var(--surface3); border: 1px solid var(--border); color: var(--text); border-radius: var(--radius-sm); font-family: inherit; font-size: 13px; }
+    .comment-add input:focus { outline: none; border-color: var(--accent); }
+
+    /* APPROVAL */
+    .approval-btn { padding: 6px 14px; border-radius: var(--radius-sm); font-size: 12px; font-weight: 700; cursor: pointer; border: 1px solid var(--border); background: var(--surface2); color: var(--text2); transition: all 0.15s; }
+    .approval-btn.approved { background: var(--green-light); border-color: var(--green); color: var(--green); }
+    .approval-btn.rejected { background: var(--red-light); border-color: var(--red); color: var(--red); }
+
+    /* DIVIDER */
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    /* GENERATION LOADING */
+    .gen-loader { text-align: center; padding: 50px; }
+    .gen-spinner { width: 44px; height: 44px; border: 3px solid var(--surface3); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* SHOT ASSIGNMENT */
+    .angle-shot-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+    .assigned-shot-row { display: flex; align-items: flex-start; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .assigned-shot-row:last-child { border-bottom: none; }
+    .remove-btn { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; padding: 0; margin-top: 2px; }
+    .remove-btn:hover { color: var(--red); }
+
+    /* HOME */
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+    .stat-num { font-size: 32px; font-weight: 800; color: var(--accent); }
+    .stat-label { font-size: 13px; color: var(--text3); margin-top: 4px; }
+    .workflow-step { display: flex; align-items: flex-start; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--border); }
+    .workflow-step:last-child { border-bottom: none; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .step-info .step-title { font-weight: 700; font-size: 14px; }
+    .step-info .step-desc { font-size: 12px; color: var(--text3); margin-top: 3px; }
+
+    /* DB VIEWS */
+    .db-row { display: flex; align-items: center; gap: 14px; padding: 14px 18px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; }
+    .db-row .db-name { font-weight: 600; flex: 1; }
+    .db-row .db-meta { font-size: 12px; color: var(--text3); }
+
+    /* NOTICE BANNER */
+    .notice { background: var(--accent-light); border: 1px solid rgba(99,102,241,0.3); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; color: var(--accent); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+
+    /* COPY SUCCESS */
+    .copy-toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%); background: var(--green); color: white; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-weight: 600; z-index: 9999; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+    .copy-toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+<div class="main-container">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-text">🎬 Street Talk</div>
+      <div class="logo-sub">Brief Builder</div>
+    </div>
+    <div class="sidebar-section">Workflow</div>
+    <div class="sidebar-item" id="nav-home" onclick="nav('home')">
+      <span class="icon">🏠</span> Home
+    </div>
+    <div class="sidebar-item" id="nav-projects" onclick="nav('projects')">
+      <span class="icon">📁</span> Projects
+      <span class="badge" id="badge-projects">0</span>
+    </div>
+    <div class="sidebar-item" id="nav-brief-building" onclick="nav('brief-building')">
+      <span class="icon">🎯</span> Brief Building
+    </div>
+    <div class="sidebar-item" id="nav-shot-selection" onclick="nav('shot-selection')">
+      <span class="icon">🎬</span> Shot Selection
+    </div>
+    <div class="sidebar-item" id="nav-brief-generation" onclick="nav('brief-generation')">
+      <span class="icon">✨</span> Brief Generation
+    </div>
+    <div class="sidebar-section">Database</div>
+    <div class="sidebar-item" id="nav-angles-db" onclick="nav('angles-db')">
+      <span class="icon">📐</span> Angles
+      <span class="badge" id="badge-angles">0</span>
+    </div>
+    <div class="sidebar-item" id="nav-shots-db" onclick="nav('shots-db')">
+      <span class="icon">🎥</span> Shots
+      <span class="badge" id="badge-shots">0</span>
+    </div>
+    <div class="sidebar-item" id="nav-brands-db" onclick="nav('brands-db')">
+      <span class="icon">🏷️</span> Brands
+      <span class="badge" id="badge-brands">0</span>
+    </div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="content">
+    <div class="header">
+      <div>
+        <div class="header-title" id="page-title">Home</div>
+        <div class="header-sub" id="page-sub">Street Talk Brief Builder</div>
+      </div>
+      <div id="header-actions"></div>
+    </div>
+    <div class="main-content" id="main-content"></div>
+  </div>
+</div>
+
+<!-- PRESENTATION OVERLAY -->
+<div id="presentation-overlay">
+  <div class="pres-header">
+    <div>
+      <div style="font-size:18px;font-weight:700;" id="pres-title">Brief Presentation</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:3px;" id="pres-meta"></div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="btn btn-secondary btn-sm" onclick="copyShareLink()">🔗 Copy Link</button>
+      <button class="btn btn-secondary btn-sm" onclick="closePresentation()">✕ Close</button>
+    </div>
+  </div>
+  <div class="pres-body" id="pres-body"></div>
+</div>
+
+<!-- COPY TOAST -->
+<div class="copy-toast" id="copy-toast">✓ Link copied!</div>
+
+<script>
+// ─── STATE ──────────────────────────────────────────────────────────────────
+const STORAGE_KEY = 'st_brief_v1';
+
+const DEFAULT_STATE = {
+  brands: [
+    { id: 'b1', name: 'NovaSkin', products: ['NovaSkin Serum', 'NovaSkin SPF Moisturizer', 'NovaSkin Eye Cream'] },
+    { id: 'b2', name: 'FitFuel', products: ['FitFuel Pre-Workout', 'FitFuel Protein Powder', 'FitFuel Recovery Blend'] },
+    { id: 'b3', name: 'PureHome', products: ['PureHome All-Purpose Cleaner', 'PureHome Laundry Strips', 'PureHome Dish Soap'] },
+  ],
+  angles: [
+    { id: 'a1', name: 'Problem → Solution', category: 'Hook', description: 'Open with a relatable problem, then reveal the product as the fix.', videoUrl: '' },
+    { id: 'a2', name: 'Street Interview', category: 'Social Proof', description: 'Real people on the street share authentic first impressions or opinions.', videoUrl: '' },
+    { id: 'a3', name: 'Before & After', category: 'Transformation', description: 'Side-by-side or sequential footage showing a clear transformation.', videoUrl: '' },
+    { id: 'a4', name: 'Testimonial', category: 'Social Proof', description: 'A satisfied customer shares their genuine experience with the product.', videoUrl: '' },
+    { id: 'a5', name: 'Skeptic to Believer', category: 'Story Arc', description: 'Someone who doubted the product is converted by real results.', videoUrl: '' },
+    { id: 'a6', name: 'Bold Claim', category: 'Hook', description: 'Open with an unexpected or bold statement that demands attention.', videoUrl: '' },
+    { id: 'a7', name: 'Day in the Life', category: 'Lifestyle', description: 'Show how the product fits naturally into an aspirational daily routine.', videoUrl: '' },
+    { id: 'a8', name: 'Unboxing / First Impression', category: 'Discovery', description: 'Raw, authentic reaction to receiving and trying the product for the first time.', videoUrl: '' },
+    { id: 'a9', name: 'Compare & Contrast', category: 'Education', description: 'Stack the product against alternatives or old solutions to highlight superiority.', videoUrl: '' },
+    { id: 'a10', name: 'Expert Endorsement', category: 'Authority', description: 'A credible professional validates the product with specific insights.', videoUrl: '' },
+    { id: 'a11', name: 'Challenge / Trend Hook', category: 'Viral', description: 'Tap into a trending format or challenge to drive organic engagement.', videoUrl: '' },
+    { id: 'a12', name: 'Founder Story', category: 'Brand', description: 'The founder shares the authentic reason the product was created.', videoUrl: '' },
+  ],
+  shots: [
+    { id: 's1', name: 'Close-up Product Detail', type: 'B-roll', description: 'Tight shot highlighting texture, label, or unique product feature.' },
+    { id: 's2', name: 'Talent Reaction Shot', type: 'A-roll', description: 'Facial expression / emotional reaction from talent on camera.' },
+    { id: 's3', name: 'Overhead Flat Lay', type: 'B-roll', description: 'Top-down styled product shot with supporting elements.' },
+    { id: 's4', name: 'Talent Talking to Camera', type: 'A-roll', description: 'Direct address — talent speaks directly to the viewer.' },
+    { id: 's5', name: 'Application / Usage Demo', type: 'Both', description: 'Shows the product being applied or used in real time.' },
+    { id: 's6', name: 'Walk & Talk', type: 'A-roll', description: 'Talent walks while speaking — creates natural, candid energy.' },
+    { id: 's7', name: 'Before State (Frustration)', type: 'Both', description: 'Captures the pain point or frustration before using the product.' },
+    { id: 's8', name: 'After State (Transformation)', type: 'Both', description: 'Visual payoff showing the positive result after using the product.' },
+    { id: 's9', name: 'Street Interview (Candid)', type: 'A-roll', description: 'On-street or public-space interview with natural audio.' },
+    { id: 's10', name: 'Lifestyle Context Shot', type: 'B-roll', description: 'Product in natural environment — gym, bathroom, kitchen etc.' },
+    { id: 's11', name: 'Voiceover + B-roll', type: 'B-roll', description: 'Narration over relevant visual footage.' },
+    { id: 's12', name: 'CTA End Card', type: 'Both', description: 'Clear on-screen call to action with talent or product.' },
+  ],
+  projects: [],
+  briefs: [],
+};
+
+let S = loadState();
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return JSON.parse(JSON.stringify(DEFAULT_STATE));
+    const saved = JSON.parse(raw);
+    // Merge — ensure default DB items exist
+    return {
+      brands: saved.brands && saved.brands.length ? saved.brands : DEFAULT_STATE.brands,
+      angles: saved.angles && saved.angles.length ? saved.angles : DEFAULT_STATE.angles,
+      shots: saved.shots && saved.shots.length ? saved.shots : DEFAULT_STATE.shots,
+      projects: saved.projects || [],
+      briefs: saved.briefs || [],
+    };
+  } catch(e) { return JSON.parse(JSON.stringify(DEFAULT_STATE)); }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(S));
+  updateBadges();
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+
+// ─── NAVIGATION ─────────────────────────────────────────────────────────────
+let currentView = 'home';
+
+function nav(view, arg) {
+  currentView = view;
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + view);
+  if (navEl) navEl.classList.add('active');
+
+  const titles = {
+    'home': ['Home', 'Welcome to Street Talk Brief Builder'],
+    'projects': ['Projects', 'Manage your brand campaigns'],
+    'brief-building': ['Brief Building', 'Select angles and add guidelines'],
+    'shot-selection': ['Shot Selection', 'Assign shots to each angle'],
+    'brief-generation': ['Brief Generation', 'Generate and publish scripts'],
+    'angles-db': ['Angles Database', 'Creative angle library'],
+    'shots-db': ['Shots Database', 'Shot type library'],
+    'brands-db': ['Brands Database', 'Brand and product management'],
+  };
+
+  const [title, sub] = titles[view] || [view, ''];
+  document.getElementById('page-title').textContent = title;
+  document.getElementById('page-sub').textContent = sub;
+  document.getElementById('header-actions').innerHTML = '';
+
+  const mc = document.getElementById('main-content');
+
+  if (view === 'home') renderHome(mc);
+  else if (view === 'projects') renderProjects(mc);
+  else if (view === 'brief-building') renderBriefBuilding(mc);
+  else if (view === 'shot-selection') renderShotSelection(mc);
+  else if (view === 'brief-generation') renderBriefGeneration(mc);
+  else if (view === 'angles-db') renderAnglesDB(mc);
+  else if (view === 'shots-db') renderShotsDB(mc);
+  else if (view === 'brands-db') renderBrandsDB(mc);
+}
+
+function updateBadges() {
+  document.getElementById('badge-projects').textContent = S.projects.length;
+  document.getElementById('badge-angles').textContent = S.angles.length;
+  document.getElementById('badge-shots').textContent = S.shots.length;
+  document.getElementById('badge-brands').textContent = S.brands.length;
+}
+
+// ─── HOME ─────────────────────────────────────────────────────────────────
+function renderHome(mc) {
+  const published = S.briefs.filter(b => b.status === 'published').length;
+  const ready = S.briefs.filter(b => b.status === 'ready').length;
+  mc.innerHTML = `
+    <div class="grid-3" style="margin-bottom:28px;">
+      <div class="stat-card"><div class="stat-num">${S.projects.length}</div><div class="stat-label">Total Projects</div></div>
+      <div class="stat-card"><div class="stat-num">${ready}</div><div class="stat-label">Briefs Ready</div></div>
+      <div class="stat-card"><div class="stat-num">${published}</div><div class="stat-label">Published</div></div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title">📋 Workflow</div>
+        <div class="card-sub" style="margin-bottom:16px;">5-step brief creation process</div>
+        <div>
+          ${[
+            ['Projects','Select brand, round, and product to create a project.'],
+            ['Brief Building','Choose angles from the library and add guidelines + CTA.'],
+            ['Shot Selection','Assign specific shots to each selected angle.'],
+            ['Brief Generation','Generate scripts and finalize the brief.'],
+            ['Presentation','Share a read-only link for client review and approval.'],
+          ].map(([t,d],i) => `
+            <div class="workflow-step">
+              <div class="step-num">${i+1}</div>
+              <div class="step-info"><div class="step-title">${t}</div><div class="step-desc">${d}</div></div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🚀 Recent Projects</div>
+        <div class="card-sub" style="margin-bottom:16px;">Latest activity</div>
+        ${S.projects.length === 0 ? `<div style="color:var(--text3);font-size:13px;text-align:center;padding:30px 0;">No projects yet. <a href="#" onclick="nav('projects')" style="color:var(--accent);">Create one →</a></div>` :
+          S.projects.slice(-5).reverse().map(p => {
+            const brand = S.brands.find(b => b.id === p.brandId);
+            const brief = S.briefs.find(b => b.projectId === p.id);
+            return `<div class="project-row" style="margin-bottom:8px;" onclick="nav('brief-building')">
+              <div class="proj-info">
+                <div class="proj-name">${p.productName}</div>
+                <div class="proj-meta">${brand ? brand.name : '—'} · Round ${p.roundNumber}</div>
+              </div>
+              <span class="status-pill status-${brief ? brief.status : 'draft'}">${brief ? brief.status : 'draft'}</span>
+            </div>`;
+          }).join('')
+        }
+      </div>
+    </div>
+  `;
+}
+
+// ─── PROJECTS ─────────────────────────────────────────────────────────────
+function renderProjects(mc) {
+  document.getElementById('header-actions').innerHTML = `<button class="btn btn-primary" onclick="showCreateProjectModal()">+ New Project</button>`;
+
+  if (S.projects.length === 0) {
+    mc.innerHTML = `<div class="empty-state"><div class="empty-icon">📁</div><h3>No projects yet</h3><p>Create your first project to get started.</p><br><button class="btn btn-primary" onclick="showCreateProjectModal()">+ New Project</button></div>`;
+    return;
+  }
+
+  mc.innerHTML = S.projects.map(p => {
+    const brand = S.brands.find(b => b.id === p.brandId);
+    const brief = S.briefs.find(b => b.projectId === p.id);
+    const status = brief ? brief.status : 'draft';
+    const angleCount = brief ? brief.selectedAngles.length : 0;
+    return `
+      <div class="project-row">
+        <div class="proj-info">
+          <div class="proj-name">${p.productName}</div>
+          <div class="proj-meta">${brand ? brand.name : '—'} · Round ${p.roundNumber} · ${angleCount} angle${angleCount !== 1 ? 's' : ''}</div>
+        </div>
+        <span class="status-pill status-${status}">${status}</span>
+        <div style="display:flex;gap:8px;">
+          ${brief && brief.status === 'published' ? `<button class="btn btn-green btn-sm" onclick="openPresentation('${brief.presentationToken}')">View Brief</button>` : ''}
+          <button class="btn btn-secondary btn-sm" onclick="deleteProject('${p.id}')">Delete</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function showCreateProjectModal() {
+  const brandOptions = S.brands.map(b => `<option value="${b.id}">${b.name}</option>`).join('');
+  const firstBrandProducts = S.brands[0] ? S.brands[0].products.map(p => `<option value="${p}">${p}</option>`).join('') : '';
+
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.id = 'create-project-modal';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">New Project</div>
+      <div class="modal-sub">Set up a new brief project</div>
+      <div class="form-group">
+        <label class="form-label">Brand</label>
+        <select class="form-select" id="proj-brand" onchange="updateProductOptions()">
+          ${brandOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Product</label>
+        <select class="form-select" id="proj-product">${firstBrandProducts}</select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Round of Service</label>
+        <select class="form-select" id="proj-round">
+          ${[1,2,3,4,5,6].map(n => `<option value="${n}">Round ${n}</option>`).join('')}
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="createProject()">Create Project</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function updateProductOptions() {
+  const brandId = document.getElementById('proj-brand').value;
+  const brand = S.brands.find(b => b.id === brandId);
+  const sel = document.getElementById('proj-product');
+  if (brand) sel.innerHTML = brand.products.map(p => `<option value="${p}">${p}</option>`).join('');
+}
+
+function createProject() {
+  const brandId = document.getElementById('proj-brand').value;
+  const productName = document.getElementById('proj-product').value;
+  const roundNumber = parseInt(document.getElementById('proj-round').value);
+  if (!brandId || !productName) return;
+
+  const project = { id: uid(), brandId, productName, roundNumber, createdAt: new Date().toISOString() };
+  S.projects.push(project);
+  saveState();
+  closeModal();
+  nav('projects');
+}
+
+function deleteProject(id) {
+  if (!confirm('Delete this project and all its brief data?')) return;
+  S.projects = S.projects.filter(p => p.id !== id);
+  S.briefs = S.briefs.filter(b => b.projectId !== id);
+  saveState();
+  renderProjects(document.getElementById('main-content'));
+}
+
+// ─── BRIEF BUILDING ─────────────────────────────────────────────────────────
+function renderBriefBuilding(mc) {
+  if (S.projects.length === 0) {
+    mc.innerHTML = `<div class="empty-state"><div class="empty-icon">🎯</div><h3>No projects yet</h3><p>Create a project first.</p><br><button class="btn btn-primary" onclick="nav('projects')">Go to Projects</button></div>`;
+    return;
+  }
+
+  const projectOptions = S.projects.map(p => {
+    const brand = S.brands.find(b => b.id === p.brandId);
+    return `<option value="${p.id}">${p.productName} (${brand ? brand.name : '—'} · R${p.roundNumber})</option>`;
+  }).join('');
+
+  mc.innerHTML = `
+    <div class="form-group" style="max-width:400px;">
+      <label class="form-label">Select Project</label>
+      <select class="form-select" id="bb-project-select" onchange="onBBProjectChange(this.value)">
+        <option value="">— Pick a project —</option>
+        ${projectOptions}
+      </select>
+    </div>
+    <div id="bb-project-content"></div>
+  `;
+
+  // Auto-select first project
+  const sel = document.getElementById('bb-project-select');
+  if (S.projects.length > 0) {
+    sel.value = S.projects[0].id;
+    onBBProjectChange(S.projects[0].id);
+  }
+}
+
+function onBBProjectChange(projectId) {
+  const container = document.getElementById('bb-project-content');
+  if (!projectId) { container.innerHTML = ''; return; }
+
+  const brief = S.briefs.find(b => b.projectId === projectId) || { selectedAngles: [], guidelines: '', cta: '' };
+
+  container.innerHTML = `
+    <div class="divider"></div>
+    <div class="grid-2" style="align-items:start;">
+      <div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:16px;">📐 Select Angles</div>
+        <div class="grid-auto" id="angle-cards-${projectId}">
+          ${S.angles.map(a => {
+            const isSelected = brief.selectedAngles && brief.selectedAngles.some(sa => sa.angleId === a.id);
+            return `
+              <div class="angle-card ${isSelected ? 'selected' : ''}" id="acard-${projectId}-${a.id}" onclick="toggleAngle('${projectId}','${a.id}',this)">
+                <div class="angle-cat">${a.category}</div>
+                <div class="angle-name">${a.name}</div>
+                <div class="angle-desc">${a.description}</div>
+                ${a.videoUrl ? `
+                  <div class="angle-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="event.stopPropagation();previewVideo('${a.videoUrl}','${a.name}')">▶ Preview</button>
+                  </div>` : `
+                  <div class="video-placeholder">No video example yet</div>`}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700;font-size:15px;margin-bottom:16px;">📝 Guidelines & CTA</div>
+        <div class="card">
+          <div class="form-group">
+            <label class="form-label">Creative Guidelines</label>
+            <textarea class="form-textarea" id="bb-guidelines-${projectId}" placeholder="e.g. Keep it authentic, avoid hard sells, product should appear within first 3 seconds...">${brief.guidelines || ''}</textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Call to Action (CTA)</label>
+            <input class="form-input" id="bb-cta-${projectId}" placeholder="e.g. Use code STREETTALK for 20% off →" value="${brief.cta || ''}">
+            <div class="form-hint">This CTA will appear at the end of generated scripts.</div>
+          </div>
+          <div id="bb-selected-summary-${projectId}" style="margin-bottom:16px;"></div>
+          <button class="btn btn-primary" style="width:100%;" onclick="saveBriefBuilding('${projectId}')">💾 Save Brief Building</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  updateBBSummary(projectId);
+}
+
+function toggleAngle(projectId, angleId, cardEl) {
+  let brief = S.briefs.find(b => b.projectId === projectId);
+  if (!brief) {
+    brief = { id: uid(), projectId, selectedAngles: [], guidelines: '', cta: '', shotAssignments: [], generatedScripts: [], status: 'draft', presentationToken: '', comments: [], approvals: {}, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    S.briefs.push(brief);
+  }
+
+  const idx = brief.selectedAngles.findIndex(sa => sa.angleId === angleId);
+  if (idx >= 0) {
+    brief.selectedAngles.splice(idx, 1);
+    cardEl.classList.remove('selected');
+  } else {
+    brief.selectedAngles.push({ angleId, notes: '' });
+    cardEl.classList.add('selected');
+  }
+  updateBBSummary(projectId);
+}
+
+function updateBBSummary(projectId) {
+  const brief = S.briefs.find(b => b.projectId === projectId);
+  const count = brief ? brief.selectedAngles.length : 0;
+  const el = document.getElementById(`bb-selected-summary-${projectId}`);
+  if (!el) return;
+  if (count === 0) { el.innerHTML = `<div style="color:var(--text3);font-size:12px;">No angles selected yet.</div>`; return; }
+  const names = (brief.selectedAngles || []).map(sa => {
+    const a = S.angles.find(x => x.id === sa.angleId);
+    return a ? a.name : sa.angleId;
+  });
+  el.innerHTML = `<div style="font-size:12px;color:var(--green);">✓ ${count} angle${count !== 1?'s':''} selected: ${names.join(', ')}</div>`;
+}
+
+function saveBriefBuilding(projectId) {
+  let brief = S.briefs.find(b => b.projectId === projectId);
+  if (!brief) {
+    brief = { id: uid(), projectId, selectedAngles: [], guidelines: '', cta: '', shotAssignments: [], generatedScripts: [], status: 'draft', presentationToken: '', comments: [], approvals: {}, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() };
+    S.briefs.push(brief);
+  }
+  brief.guidelines = document.getElementById(`bb-guidelines-${projectId}`)?.value || '';
+  brief.cta = document.getElementById(`bb-cta-${projectId}`)?.value || '';
+  brief.updatedAt = new Date().toISOString();
+  saveState();
+  showToast('Brief building saved!');
+}
+
+function previewVideo(url, title) {
+  const embed = getEmbedUrl(url);
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.innerHTML = `
+    <div class="modal modal-wide">
+      <div class="modal-title" style="margin-bottom:16px;">▶ ${title}</div>
+      ${embed ? `<div class="video-embed"><iframe src="${embed}" allowfullscreen></iframe></div>` : `<div class="notice">Could not embed this URL. <a href="${url}" target="_blank" style="color:var(--accent);">Open in new tab →</a></div>`}
+      <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Close</button></div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function getEmbedUrl(url) {
+  if (!url) return null;
+  const yt = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  if (yt) return `https://www.youtube.com/embed/${yt[1]}?autoplay=1`;
+  const vm = url.match(/vimeo\.com\/(\d+)/);
+  if (vm) return `https://player.vimeo.com/video/${vm[1]}?autoplay=1`;
+  return null;
+}
+
+// ─── SHOT SELECTION ─────────────────────────────────────────────────────────
+function renderShotSelection(mc) {
+  if (S.projects.length === 0) {
+    mc.innerHTML = `<div class="empty-state"><div class="empty-icon">🎬</div><h3>No projects yet</h3><button class="btn btn-primary" onclick="nav('projects')">Go to Projects</button></div>`;
+    return;
+  }
+
+  const projectOptions = S.projects.map(p => {
+    const brand = S.brands.find(b => b.id === p.brandId);
+    return `<option value="${p.id}">${p.productName} (${brand ? brand.name : '—'} · R${p.roundNumber})</option>`;
+  }).join('');
+
+  mc.innerHTML = `
+    <div class="form-group" style="max-width:400px;">
+      <label class="form-label">Select Project</label>
+      <select class="form-select" id="ss-project-select" onchange="onSSProjectChange(this.value)">
+        <option value="">— Pick a project —</option>
+        ${projectOptions}
+      </select>
+    </div>
+    <div id="ss-project-content"></div>
+  `;
+
+  const sel = document.getElementById('ss-project-select');
+  if (S.projects.length > 0) {
+    sel.value = S.projects[0].id;
+    onSSProjectChange(S.projects[0].id);
+  }
+}
+
+function onSSProjectChange(projectId) {
+  const container = document.getElementById('ss-project-content');
+  if (!projectId) { container.innerHTML = ''; return; }
+
+  const brief = S.briefs.find(b => b.projectId === projectId);
+  if (!brief || !brief.selectedAngles.length) {
+    container.innerHTML = `<div class="notice">⚠️ No angles selected for this project yet. <a href="#" onclick="nav('brief-building')" style="color:var(--accent);">Go to Brief Building →</a></div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="divider"></div>
+    ${brief.selectedAngles.map(sa => {
+      const angle = S.angles.find(a => a.id === sa.angleId);
+      if (!angle) return '';
+      const assignment = (brief.shotAssignments || []).find(x => x.angleId === sa.angleId) || { shots: [] };
+
+      return `
+        <div class="angle-shot-section">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div>
+              <div style="font-weight:700;font-size:15px;">${angle.name}</div>
+              <div style="font-size:12px;color:var(--accent);">${angle.category}</div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="openShotPicker('${projectId}','${sa.angleId}')">+ Add Shot</button>
+          </div>
+          ${assignment.shots.length === 0 ? `<div style="color:var(--text3);font-size:12px;">No shots assigned yet.</div>` :
+            assignment.shots.map((sh, idx) => {
+              const shot = S.shots.find(s => s.id === sh.shotId);
+              const typeClass = sh.type === 'A-roll' ? 'tag-aroll' : sh.type === 'B-roll' ? 'tag-broll' : 'tag-both';
+              return `
+                <div class="assigned-shot-row">
+                  <button class="remove-btn" onclick="removeShotFromAngle('${projectId}','${sa.angleId}',${idx})">✕</button>
+                  <div style="flex:1;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                      <span style="font-weight:600;font-size:13px;">${shot ? shot.name : sh.shotId}</span>
+                      <span class="tag ${typeClass}">${shot ? shot.type : ''}</span>
+                    </div>
+                    <input class="form-input" style="margin-top:4px;" placeholder="Shot notes (optional)..." value="${sh.notes || ''}" oninput="updateShotNotes('${projectId}','${sa.angleId}',${idx},this.value)">
+                  </div>
+                </div>
+              `;
+            }).join('')
+          }
+        </div>
+      `;
+    }).join('')}
+    <div style="margin-top:16px;">
+      <button class="btn btn-primary" onclick="saveShotSelection('${projectId}')">💾 Save Shot Selection</button>
+    </div>
+  `;
+}
+
+function openShotPicker(projectId, angleId) {
+  const brief = S.briefs.find(b => b.projectId === projectId);
+  const assignment = (brief?.shotAssignments || []).find(x => x.angleId === angleId) || { shots: [] };
+  const assignedIds = assignment.shots.map(s => s.shotId);
+
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">Add Shot</div>
+      <div class="modal-sub">Choose a shot type to assign</div>
+      ${S.shots.map(shot => {
+        const assigned = assignedIds.includes(shot.id);
+        const typeClass = shot.type === 'A-roll' ? 'tag-aroll' : shot.type === 'B-roll' ? 'tag-broll' : 'tag-both';
+        return `
+          <div class="db-row" style="cursor:pointer;${assigned ? 'opacity:0.5;' : ''}" onclick="${assigned ? '' : `addShotToAngle('${projectId}','${angleId}','${shot.id}');closeModal();`}">
+            <div class="db-name">${shot.name}</div>
+            <span class="tag ${typeClass}">${shot.type}</span>
+            ${assigned ? `<span style="font-size:11px;color:var(--green);">✓ Added</span>` : ''}
+          </div>
+        `;
+      }).join('')}
+      <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Done</button></div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function addShotToAngle(projectId, angleId, shotId) {
+  let brief = S.briefs.find(b => b.projectId === projectId);
+  if (!brief) return;
+  if (!brief.shotAssignments) brief.shotAssignments = [];
+  let assignment = brief.shotAssignments.find(x => x.angleId === angleId);
+  if (!assignment) {
+    assignment = { angleId, shots: [] };
+    brief.shotAssignments.push(assignment);
+  }
+  if (assignment.shots.some(s => s.shotId === shotId)) return;
+  const shot = S.shots.find(s => s.id === shotId);
+  assignment.shots.push({ shotId, notes: '', type: shot ? shot.type : '' });
+  saveState();
+  onSSProjectChange(projectId);
+}
+
+function removeShotFromAngle(projectId, angleId, idx) {
+  const brief = S.briefs.find(b => b.projectId === projectId);
+  if (!brief) return;
+  const assignment = brief.shotAssignments?.find(x => x.angleId === angleId);
+  if (!assignment) return;
+  assignment.shots.splice(idx, 1);
+  saveState();
+  onSSProjectChange(projectId);
+}
+
+function updateShotNotes(projectId, angleId, idx, val) {
+  const brief = S.briefs.find(b => b.projectId === projectId);
+  if (!brief) return;
+  const assignment = brief.shotAssignments?.find(x => x.angleId === angleId);
+  if (!assignment || !assignment.shots[idx]) return;
+  assignment.shots[idx].notes = val;
+}
+
+function saveShotSelection(projectId) {
+  const brief = S.briefs.find(b => b.projectId === projectId);
+  if (brief) { brief.updatedAt = new Date().toISOString(); saveState(); }
+  showToast('Shot selection saved!');
+}
+
+// ─── BRIEF GENERATION ───────────────────────────────────────────────────────
+function renderBriefGeneration(mc) {
+  if (S.projects.length === 0) {
+    mc.innerHTML = `<div class="empty-state"><div class="empty-icon">✨</div><h3>No projects yet</h3><button class="btn btn-primary" onclick="nav('projects')">Go to Projects</button></div>`;
+    return;
+  }
+
+  const projectOptions = S.projects.map(p => {
+    const brand = S.brands.find(b => b.id === p.brandId);
+    return `<option value="${p.id}">${p.productName} (${brand ? brand.name : '—'} · R${p.roundNumber})</option>`;
+  }).join('');
+
+  mc.innerHTML = `
+    <div class="form-group" style="max-width:400px;">
+      <label class="form-label">Select Project</label>
+      <select class="form-select" id="bg-project-select" onchange="onBGProjectChange(this.value)">
+        <option value="">— Pick a project —</option>
+        ${projectOptions}
+      </select>
+    </div>
+    <div id="bg-project-content"></div>
+  `;
+
+  const sel = document.getElementById('bg-project-select');
+  if (S.projects.length > 0) {
+    sel.value = S.projects[0].id;
+    onBGProjectChange(S.projects[0].id);
+  }
+}
+
+function onBGProjectChange(projectId) {
+  const container = document.getElementById('bg-project-content');
+  if (!projectId) { container.innerHTML = ''; return; }
+
+  const brief = S.briefs.find(b => b.projectId === projectId);
+  const project = S.projects.find(p => p.id === projectId);
+  const brand = project ? S.brands.find(b => b.id === project.brandId) : null;
+
+  if (!brief || !brief.selectedAngles.length) {
+    container.innerHTML = `<div class="notice">⚠️ Complete Brief Building first. <a href="#" onclick="nav('brief-building')" style="color:var(--accent);">Go there →</a></div>`;
+    return;
+  }
+
+  const hasScripts = brief.generatedScripts && brief.generatedScripts.length > 0;
+
+  container.innerHTML = `
+    <div class="divider"></div>
+    <div style="margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="btn btn-primary" onclick="generateBrief('${projectId}')">✨ ${hasScripts ? 'Re-generate Scripts' : 'Generate Scripts'}</button>
+      ${hasScripts ? `
+        <button class="btn btn-green" onclick="publishBrief('${projectId}')">🚀 ${brief.status === 'published' ? 'Update Share Link' : 'Publish & Share'}</button>
+        ${brief.status === 'published' ? `<button class="btn btn-secondary" onclick="openPresentation('${brief.presentationToken}')">👁 View Presentation</button>` : ''}
+      ` : ''}
+    </div>
+    <div id="bg-scripts-${projectId}">
+      ${hasScripts ? renderScripts(brief) : `<div style="color:var(--text3);font-size:13px;">Click "Generate Scripts" to create UGC scripts for each selected angle.</div>`}
+    </div>
+  `;
+}
+
+function renderScripts(brief) {
+  return (brief.generatedScripts || []).map(gs => {
+    const angle = S.angles.find(a => a.id === gs.angleId);
+    return `
+      <div class="script-block">
+        <div class="script-angle">${gs.angleName}</div>
+        <div class="script-cat">${angle ? angle.category : ''}</div>
+        <div class="script-text">${gs.script}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+const SCRIPT_TEMPLATES = {
+  'Problem → Solution': (prod, brand, cta) => `[HOOK — 0:00–0:03]
+Talent looks frustrated at camera: "I've tried everything for [problem], but nothing worked..."
+
+[PROBLEM — 0:03–0:08]
+Show relatable struggle. Talent: "Until I found ${prod} by ${brand}."
+
+[REVEAL — 0:08–0:18]
+Product closeup. Talent demonstrates how it works, naturally.
+Talent: "It's actually simple — here's what makes it different..."
+
+[RESULT — 0:18–0:25]
+Talent smiling, showing transformation:
+"I noticed a difference after the first use. I'm not going back."
+
+[CTA — 0:25–0:30]
+Talent to camera: "${cta}"`,
+
+  'Street Interview': (prod, brand, cta) => `[INTRO — 0:00–0:03]
+Camera crew approaches stranger: "Excuse me, quick question — have you heard of ${brand}?"
+
+[REACTION 1 — 0:03–0:10]
+Person 1: "Never heard of it." → crew hands them ${prod} to try on the spot.
+
+[REACTION 2 — 0:10–0:20]
+Genuine first impression. Person: "Wait, this is actually [adjective]? I didn't expect that."
+
+[SOCIAL PROOF — 0:20–0:26]
+Cut between 2–3 different people giving authentic quick takes.
+
+[CTA — 0:26–0:30]
+Brand logo + text overlay: "${cta}"`,
+
+  'Before & After': (prod, brand, cta) => `[BEFORE — 0:00–0:08]
+Show the "before" state clearly. Muted tones, problem visible.
+Talent or B-roll shows the frustration / issue plainly.
+
+[TRANSITION — 0:08–0:12]
+Screen wipe or cut to product shot. Logo appears briefly.
+Text overlay: "Then I tried ${prod}..."
+
+[AFTER — 0:12–0:24]
+Bright, vibrant footage of the result. Talent smiling, confident.
+Talent: "This is the difference ${brand} made in just [timeframe]."
+
+[CTA — 0:24–0:30]
+Direct address to camera: "${cta}"`,
+
+  'Testimonial': (prod, brand, cta) => `[OPEN — 0:00–0:05]
+Talent sits naturally, speaking directly to camera.
+"I want to talk about ${prod} because honestly — I wasn't expecting it to work."
+
+[STORY — 0:05–0:18]
+Personal, specific story. Avoid generic praise.
+"What actually surprised me was [specific detail]. I've been using it for [duration] now."
+
+[PROOF — 0:18–0:25]
+Show the product in use or show results.
+Talent: "If you're on the fence, trust me — just try it."
+
+[CTA — 0:25–0:30]
+"${cta}"`,
+
+  'Skeptic to Believer': (prod, brand, cta) => `[SKEPTIC OPEN — 0:00–0:05]
+Talent with arms crossed, eyebrow raised:
+"Okay, so my friend would not stop talking about ${brand}. I gave in."
+
+[TRIAL — 0:05–0:15]
+Show the hesitant first try. Keep it real — no forced enthusiasm.
+"My first thought was [honest reaction]. But then..."
+
+[CONVERT — 0:15–0:24]
+Genuine shift. Talent actually surprised themselves.
+"I hate that it works. Like actually. I'm now the friend that won't stop talking about it."
+
+[CTA — 0:24–0:30]
+"${cta}"`,
+
+  'Bold Claim': (prod, brand, cta) => `[HOOK — 0:00–0:04]
+Talent straight to camera, no hesitation:
+"This is the best [product category] I've ever used. Period."
+
+[BACK IT UP — 0:04–0:15]
+Don't back down — lean in. List 3 specific reasons fast.
+"Here's why: [#1]. [#2]. And [#3]."
+Show product B-roll cutting with each point.
+
+[PROOF — 0:15–0:24]
+Talent demonstrates. Results visible.
+"I've tried [competitors / alternatives]. Nothing compares to ${prod}."
+
+[CTA — 0:24–0:30]
+"${cta}"`,
+};
+
+function generateBrief(projectId) {
+  const container = document.getElementById(`bg-scripts-${projectId}`);
+  container.innerHTML = `<div class="gen-loader"><div class="gen-spinner"></div><div style="color:var(--text2);">Generating scripts...</div></div>`;
+
+  setTimeout(() => {
+    const brief = S.briefs.find(b => b.projectId === projectId);
+    const project = S.projects.find(p => p.id === projectId);
+    const brand = project ? S.brands.find(b => b.id === project.brandId) : null;
+    if (!brief) return;
+
+    const prod = project ? project.productName : 'the product';
+    const brandName = brand ? brand.name : 'the brand';
+    const cta = brief.cta || 'Link in bio to shop now!';
+
+    brief.generatedScripts = brief.selectedAngles.map(sa => {
+      const angle = S.angles.find(a => a.id === sa.angleId);
+      if (!angle) return null;
+      const tplFn = SCRIPT_TEMPLATES[angle.name];
+      const script = tplFn ? tplFn(prod, brandName, cta) : `[HOOK — 0:00–0:05]\nTalent opens with a compelling statement about ${prod}.\n\n[MAIN — 0:05–0:22]\nDemonstrate the key benefit of ${prod} by ${brandName}.\nKeep it authentic — let the product speak for itself.\n\n[CTA — 0:22–0:30]\n"${cta}"`;
+      return { angleId: angle.id, angleName: angle.name, script };
+    }).filter(Boolean);
+
+    brief.status = 'ready';
+    brief.updatedAt = new Date().toISOString();
+    saveState();
+    onBGProjectChange(projectId);
+  }, 2200);
+}
+
+function publishBrief(projectId) {
+  const brief = S.briefs.find(b => b.projectId === projectId);
+  if (!brief) return;
+  if (!brief.presentationToken) brief.presentationToken = uid();
+  brief.status = 'published';
+  brief.updatedAt = new Date().toISOString();
+  saveState();
+
+  const fakeUrl = `https://brief.streettalk.co/view/${brief.presentationToken}`;
+  navigator.clipboard.writeText(fakeUrl).catch(() => {});
+  showToast('Presentation published! Link copied.');
+  onBGProjectChange(projectId);
+}
+
+// ─── PRESENTATION ────────────────────────────────────────────────────────────
+let _currentPresentationToken = null;
+
+function openPresentation(token) {
+  const brief = S.briefs.find(b => b.presentationToken === token);
+  if (!brief) { alert('Presentation not found.'); return; }
+
+  _currentPresentationToken = token;
+  const project = S.projects.find(p => p.id === brief.projectId);
+  const brand = project ? S.brands.find(b => b.id === project.brandId) : null;
+
+  document.getElementById('pres-title').textContent = project ? `${project.productName} — Round ${project.roundNumber}` : 'Brief Presentation';
+  document.getElementById('pres-meta').textContent = brand ? `${brand.name} · ${new Date(brief.updatedAt).toLocaleDateString()}` : '';
+
+  const body = document.getElementById('pres-body');
+  body.innerHTML = renderPresentationBody(brief, project, brand);
+
+  document.getElementById('presentation-overlay').style.display = 'block';
+  history.pushState({}, '', `#presentation/${token}`);
+}
+
+function renderPresentationBody(brief, project, brand) {
+  if (!brief.selectedAngles.length) return '<div style="color:var(--text3);text-align:center;padding:60px;">No angles in this brief.</div>';
+
+  const prod = project ? project.productName : 'the product';
+  const cta = brief.cta || '';
+  const guidelines = brief.guidelines || '';
+
+  let html = '';
+  if (guidelines || cta) {
+    html += `<div class="card" style="margin-bottom:24px;">
+      ${guidelines ? `<div><span style="font-weight:700;">Guidelines:</span> <span style="color:var(--text2);">${guidelines}</span></div>` : ''}
+      ${cta ? `<div style="margin-top:${guidelines ? 8 : 0}px;"><span style="font-weight:700;">CTA:</span> <span style="color:var(--text2);">${cta}</span></div>` : ''}
+    </div>`;
+  }
+
+  html += brief.selectedAngles.map(sa => {
+    const angle = S.angles.find(a => a.id === sa.angleId);
+    if (!angle) return '';
+    const assignment = (brief.shotAssignments || []).find(x => x.angleId === sa.angleId);
+    const scriptObj = (brief.generatedScripts || []).find(g => g.angleId === sa.angleId);
+    const approved = brief.approvals && brief.approvals[sa.angleId];
+    const comments = (brief.comments || []).filter(c => c.angleId === sa.angleId);
+
+    return `
+      <div class="pres-angle" id="pres-angle-${sa.angleId}">
+        <div class="pres-angle-header">
+          <div>
+            <div style="font-size:11px;color:var(--accent);text-transform:uppercase;font-weight:700;margin-bottom:4px;">${angle.category}</div>
+            <div class="pres-angle-name">${angle.name}</div>
+            <div style="font-size:13px;color:var(--text2);margin-top:4px;">${angle.description}</div>
+          </div>
+          <button class="approval-btn ${approved === true ? 'approved' : approved === false ? 'rejected' : ''}" onclick="toggleApproval('${brief.id}','${sa.angleId}',this)">
+            ${approved === true ? '✓ Approved' : approved === false ? '✗ Rejected' : 'Approve?'}
+          </button>
+        </div>
+
+        ${angle.videoUrl ? `
+          <div class="pres-section-label">Example Video</div>
+          ${getEmbedUrl(angle.videoUrl) ? `<div class="video-embed"><iframe src="${getEmbedUrl(angle.videoUrl)}" allowfullscreen></iframe></div>` : `<a href="${angle.videoUrl}" target="_blank" style="color:var(--accent);">Watch example →</a>`}
+        ` : ''}
+
+        ${assignment && assignment.shots.length ? `
+          <div class="pres-section-label">📹 Shots</div>
+          ${assignment.shots.map(sh => {
+            const shot = S.shots.find(s => s.id === sh.shotId);
+            const typeClass = sh.type === 'A-roll' ? 'tag-aroll' : sh.type === 'B-roll' ? 'tag-broll' : 'tag-both';
+            return `<div class="shot-row">
+              <span class="tag ${typeClass}">${shot ? shot.type : sh.type}</span>
+              <div><div class="shot-name">${shot ? shot.name : sh.shotId}</div>${sh.notes ? `<div class="shot-note">${sh.notes}</div>` : ''}</div>
+            </div>`;
+          }).join('')}
+        ` : ''}
+
+        ${scriptObj ? `
+          <div class="pres-section-label">📝 Script</div>
+          <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:16px;">
+            <pre style="font-family:inherit;font-size:13px;color:var(--text2);white-space:pre-wrap;line-height:1.7;">${scriptObj.script}</pre>
+          </div>
+        ` : ''}
+
+        <div class="pres-section-label">💬 Comments</div>
+        <div class="comment-box">
+          ${comments.length === 0 ? `<div style="color:var(--text3);font-size:12px;">No comments yet.</div>` :
+            comments.map(c => `
+              <div class="comment-item">
+                <div class="comment-meta">${c.author} · ${new Date(c.createdAt).toLocaleString()}</div>
+                <div class="comment-text">${c.text}</div>
+              </div>
+            `).join('')}
+          <div class="comment-add">
+            <input id="comment-input-${sa.angleId}" placeholder="Add a comment..." onkeydown="if(event.key==='Enter')addComment('${brief.id}','${sa.angleId}')">
+            <button class="btn btn-secondary btn-sm" onclick="addComment('${brief.id}','${sa.angleId}')">Post</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  return html;
+}
+
+function toggleApproval(briefId, angleId, btn) {
+  const brief = S.briefs.find(b => b.id === briefId);
+  if (!brief) return;
+  if (!brief.approvals) brief.approvals = {};
+  const cur = brief.approvals[angleId];
+  if (cur === true) { brief.approvals[angleId] = false; btn.className = 'approval-btn rejected'; btn.textContent = '✗ Rejected'; }
+  else if (cur === false) { delete brief.approvals[angleId]; btn.className = 'approval-btn'; btn.textContent = 'Approve?'; }
+  else { brief.approvals[angleId] = true; btn.className = 'approval-btn approved'; btn.textContent = '✓ Approved'; }
+  saveState();
+}
+
+function addComment(briefId, angleId) {
+  const input = document.getElementById(`comment-input-${angleId}`);
+  if (!input || !input.value.trim()) return;
+  const brief = S.briefs.find(b => b.id === briefId);
+  if (!brief) return;
+  if (!brief.comments) brief.comments = [];
+  brief.comments.push({ id: uid(), angleId, text: input.value.trim(), author: 'Reviewer', createdAt: new Date().toISOString() });
+  saveState();
+  input.value = '';
+
+  // Re-render just the comments section
+  const project = S.projects.find(p => p.id === brief.projectId);
+  const brand = project ? S.brands.find(b => b.id === project.brandId) : null;
+  document.getElementById('pres-body').innerHTML = renderPresentationBody(brief, project, brand);
+}
+
+function closePresentation() {
+  document.getElementById('presentation-overlay').style.display = 'none';
+  _currentPresentationToken = null;
+  history.pushState({}, '', window.location.pathname);
+}
+
+function copyShareLink() {
+  if (!_currentPresentationToken) return;
+  const fakeUrl = `https://brief.streettalk.co/view/${_currentPresentationToken}`;
+  navigator.clipboard.writeText(fakeUrl).catch(() => {});
+  showToast('Link copied!');
+}
+
+function checkHash() {
+  const hash = window.location.hash;
+  const match = hash.match(/^#presentation\/(.+)$/);
+  if (match) openPresentation(match[1]);
+}
+
+// ─── DATABASE VIEWS ──────────────────────────────────────────────────────────
+function renderAnglesDB(mc) {
+  document.getElementById('header-actions').innerHTML = `<button class="btn btn-primary" onclick="showAddAngleModal()">+ Add Angle</button>`;
+  mc.innerHTML = S.angles.map(a => `
+    <div class="db-row">
+      <div style="width:28px;height:28px;background:var(--accent-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">📐</div>
+      <div class="db-name">
+        ${a.name}
+        <div style="font-size:12px;color:var(--text3);font-weight:400;margin-top:2px;">${a.description}</div>
+      </div>
+      <span class="tag" style="background:var(--accent-light);color:var(--accent);">${a.category}</span>
+      <div style="display:flex;gap:8px;align-items:center;">
+        ${a.videoUrl ? `<span style="font-size:11px;color:var(--green);">🎬 video</span>` : `<span style="font-size:11px;color:var(--text3);">no video</span>`}
+        <button class="btn btn-secondary btn-sm" onclick="editAngleVideoUrl('${a.id}')">Edit URL</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function editAngleVideoUrl(id) {
+  const angle = S.angles.find(a => a.id === id);
+  if (!angle) return;
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">${angle.name}</div>
+      <div class="modal-sub">Add a YouTube or Vimeo URL as a video example</div>
+      <div class="form-group">
+        <label class="form-label">Video URL</label>
+        <input class="form-input" id="edit-video-url" value="${angle.videoUrl || ''}" placeholder="https://youtube.com/watch?v=...">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveAngleVideoUrl('${id}')">Save</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function saveAngleVideoUrl(id) {
+  const angle = S.angles.find(a => a.id === id);
+  if (!angle) return;
+  angle.videoUrl = document.getElementById('edit-video-url').value.trim();
+  saveState();
+  closeModal();
+  nav('angles-db');
+}
+
+function showAddAngleModal() {
+  const cats = ['Hook', 'Social Proof', 'Transformation', 'Story Arc', 'Lifestyle', 'Discovery', 'Education', 'Authority', 'Viral', 'Brand'];
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">New Angle</div>
+      <div class="modal-sub">Add a new angle to the library</div>
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="new-angle-name" placeholder="e.g. Social Proof Stack">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-select" id="new-angle-cat">
+          ${cats.map(c => `<option value="${c}">${c}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="new-angle-desc" placeholder="Brief description of this angle..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addAngle()">Add Angle</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function addAngle() {
+  const name = document.getElementById('new-angle-name').value.trim();
+  const category = document.getElementById('new-angle-cat').value;
+  const description = document.getElementById('new-angle-desc').value.trim();
+  if (!name) return;
+  S.angles.push({ id: uid(), name, category, description, videoUrl: '' });
+  saveState();
+  closeModal();
+  nav('angles-db');
+}
+
+function renderShotsDB(mc) {
+  document.getElementById('header-actions').innerHTML = `<button class="btn btn-primary" onclick="showAddShotModal()">+ Add Shot</button>`;
+  mc.innerHTML = S.shots.map(s => {
+    const typeClass = s.type === 'A-roll' ? 'tag-aroll' : s.type === 'B-roll' ? 'tag-broll' : 'tag-both';
+    return `
+      <div class="db-row">
+        <div style="width:28px;height:28px;background:var(--surface3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🎥</div>
+        <div class="db-name">
+          ${s.name}
+          <div style="font-size:12px;color:var(--text3);font-weight:400;margin-top:2px;">${s.description}</div>
+        </div>
+        <span class="tag ${typeClass}">${s.type}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function showAddShotModal() {
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">New Shot</div>
+      <div class="modal-sub">Add a shot type to the library</div>
+      <div class="form-group">
+        <label class="form-label">Shot Name</label>
+        <input class="form-input" id="new-shot-name" placeholder="e.g. Product Hero Shot">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Type</label>
+        <select class="form-select" id="new-shot-type">
+          <option value="A-roll">A-roll</option>
+          <option value="B-roll">B-roll</option>
+          <option value="Both">Both</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="new-shot-desc" placeholder="What does this shot capture?"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addShot()">Add Shot</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function addShot() {
+  const name = document.getElementById('new-shot-name').value.trim();
+  const type = document.getElementById('new-shot-type').value;
+  const description = document.getElementById('new-shot-desc').value.trim();
+  if (!name) return;
+  S.shots.push({ id: uid(), name, type, description });
+  saveState();
+  closeModal();
+  nav('shots-db');
+}
+
+function renderBrandsDB(mc) {
+  document.getElementById('header-actions').innerHTML = `<button class="btn btn-primary" onclick="showAddBrandModal()">+ Add Brand</button>`;
+  mc.innerHTML = S.brands.map(b => `
+    <div class="db-row">
+      <div style="width:28px;height:28px;background:var(--yellow-light);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">🏷️</div>
+      <div class="db-name">
+        ${b.name}
+        <div style="font-size:12px;color:var(--text3);font-weight:400;margin-top:2px;">${b.products.length} product${b.products.length !== 1 ? 's' : ''}: ${b.products.join(', ')}</div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="editBrand('${b.id}')">Edit</button>
+    </div>
+  `).join('');
+}
+
+function showAddBrandModal() {
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">New Brand</div>
+      <div class="modal-sub">Add a brand to the library</div>
+      <div class="form-group">
+        <label class="form-label">Brand Name</label>
+        <input class="form-input" id="new-brand-name" placeholder="e.g. GlowLab">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Products</label>
+        <textarea class="form-textarea" id="new-brand-products" placeholder="One product per line..."></textarea>
+        <div class="form-hint">Enter each product on its own line.</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addBrand()">Add Brand</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function addBrand() {
+  const name = document.getElementById('new-brand-name').value.trim();
+  const products = document.getElementById('new-brand-products').value.split('\n').map(s => s.trim()).filter(Boolean);
+  if (!name) return;
+  S.brands.push({ id: uid(), name, products });
+  saveState();
+  closeModal();
+  nav('brands-db');
+}
+
+function editBrand(id) {
+  const brand = S.brands.find(b => b.id === id);
+  if (!brand) return;
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">Edit ${brand.name}</div>
+      <div class="form-group">
+        <label class="form-label">Brand Name</label>
+        <input class="form-input" id="edit-brand-name" value="${brand.name}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Products</label>
+        <textarea class="form-textarea" id="edit-brand-products">${brand.products.join('\n')}</textarea>
+        <div class="form-hint">One product per line.</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteBrand('${id}')">Delete</button>
+        <button class="btn btn-primary" onclick="saveBrand('${id}')">Save</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function saveBrand(id) {
+  const brand = S.brands.find(b => b.id === id);
+  if (!brand) return;
+  brand.name = document.getElementById('edit-brand-name').value.trim();
+  brand.products = document.getElementById('edit-brand-products').value.split('\n').map(s => s.trim()).filter(Boolean);
+  saveState();
+  closeModal();
+  nav('brands-db');
+}
+
+function deleteBrand(id) {
+  if (!confirm('Delete this brand?')) return;
+  S.brands = S.brands.filter(b => b.id !== id);
+  saveState();
+  closeModal();
+  nav('brands-db');
+}
+
+// ─── UTILITIES ───────────────────────────────────────────────────────────────
+function closeModal() {
+  const m = document.querySelector('.modal-overlay');
+  if (m) m.remove();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('copy-toast');
+  t.textContent = '✓ ' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Close modal on overlay click
+document.addEventListener('click', e => {
+  if (e.target.classList.contains('modal-overlay')) closeModal();
+});
+
+// Handle hash navigation
+window.addEventListener('hashchange', checkHash);
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+updateBadges();
+checkHash();
+if (!window.location.hash) nav('home');
+</script>
+</body>
+</html>
