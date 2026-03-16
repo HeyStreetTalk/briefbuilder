@@ -234,6 +234,10 @@
       <span class="icon">🎥</span> Shots
       <span class="badge" id="badge-shots">0</span>
     </div>
+    <div class="sidebar-item" id="nav-hooks-db" onclick="nav('hooks-db')">
+      <span class="icon">🪝</span> Hooks
+      <span class="badge" id="badge-hooks">0</span>
+    </div>
     <div class="sidebar-item" id="nav-brands-db" onclick="nav('brands-db')">
       <span class="icon">🏷️</span> Brands
       <span class="badge" id="badge-brands">0</span>
@@ -309,6 +313,21 @@ const DEFAULT_STATE = {
     { id: 's11', name: 'Voiceover + B-roll', type: 'B-roll', description: 'Narration over relevant visual footage.' },
     { id: 's12', name: 'CTA End Card', type: 'Both', description: 'Clear on-screen call to action with talent or product.' },
   ],
+  hooks: [
+    { id: 'h1', name: 'Triple Hook Structure', contributor: 'Rafael Calderon', tags: 'Multiple', format: 'Paid Ads', videoUrl: '', description: 'Instead of relying on a single opener, we build three strategic hooks that can work together or independently. Hook 0 – Direct-to-Camera Hook. Hook 1 – Primary Conversation Starter. Hook 2 – Bridge Hook (Standalone Follow-Up). This structure allows us to create multiple variations from the same shoot.' },
+    { id: 'h2', name: 'Audio Hook', contributor: 'Ellie Hirsch', tags: 'Safety/Emergency Device', format: 'Paid Ads', videoUrl: 'https://next.frame.io/project/c0f26735-0448-4cc9-99ab-e35ad8c47789/view/e81ef17f-e9d8-4296-95aa-5376d0ad9eed', description: 'Short, engaging sound element that draws the viewer in before any visuals register.' },
+    { id: 'h3', name: 'Splitscreen', contributor: 'Luke Thorburg', tags: 'Health Fitness Wellness', format: 'Paid Ads', videoUrl: '', description: 'Two scenes side-by-side — compare, contrast, or show simultaneous action to create visual tension.' },
+    { id: 'h4', name: 'Outcome Reveal', contributor: 'Luke Thorburg', tags: 'Consumer App, Multiple', format: 'Paid Ads', videoUrl: '', description: 'Similar to Product Reaction, except focus on the interviewee\'s emotion when the outcome is revealed.' },
+    { id: 'h5', name: 'Problem Question', contributor: 'Luke Thorburg', tags: 'Multiple, Beauty & Skincare', format: 'Paid Ads', videoUrl: '', description: 'Open with a direct question that names the viewer\'s pain point, pulling in anyone who relates.' },
+    { id: 'h6', name: 'No Hook', contributor: 'Luke Thorburg', tags: 'Multiple', format: 'Organic', videoUrl: '', description: 'Jump straight into the content — no setup, no tease. Works best for organic content where authenticity matters most.' },
+    { id: 'h7', name: 'Public Interruption', contributor: 'Luke Thorburg', tags: 'Multiple', format: 'Organic', videoUrl: '', description: 'The talent or interviewer interrupts a public scene — creates instant curiosity and a sense of unscripted energy.' },
+    { id: 'h8', name: 'Customer Callout', contributor: 'Luke Thorburg', tags: 'Health Fitness Wellness, Beauty & Skincare', format: 'Paid Ads', videoUrl: '', description: 'Directly address a specific type of customer by calling them out by identity, habit, or problem.' },
+    { id: 'h9', name: 'Product Reaction', contributor: 'Luke Thorburg', tags: 'Beauty & Skincare', format: 'Paid Ads', videoUrl: '', description: 'Similar to Outcome Reveal, except focused on the physical product interaction and the immediate reaction it triggers.' },
+    { id: 'h10', name: 'This or That', contributor: 'Ellie Hirsch', tags: 'Health Fitness Wellness', format: 'Paid Ads', videoUrl: 'https://next.frame.io/share/70b6798d-fe30-454f-995c-4f02f2f1aa48/view/85b874e4-1480-4b06-88f6-fe4c2adb5ed9', description: 'Comparing two products — one well-known, one maybe not — educating viewers on how the well-known product falls short and presenting a healthier alternative.' },
+    { id: 'h11', name: 'Stranger Interjection', contributor: 'Kyler Tunnell', tags: 'Health Fitness Wellness, Beauty & Skincare', format: 'Paid Ads', videoUrl: 'https://streamable.com/ajhtp7', description: 'A stranger (not the main interviewee) interrupts the interview — could be a funny reaction from a passerby or a full-blown product endorsement.' },
+    { id: 'h12', name: 'Running Up on Strangers', contributor: 'Kyler Tunnell', tags: 'Any', format: 'Organic', videoUrl: 'https://streamable.com/wyf8fw', description: 'Literally running up to strangers on the street. Can be staged but comes off as more authentic and organic.' },
+    { id: 'h13', name: 'Q&A Bubble', contributor: 'Kyler Tunnell', tags: 'Any', format: 'Paid Ads', videoUrl: 'https://streamable.com/qedxpd', description: 'A misleading, odd, or intriguing Q&A text bubble overlaid on footage to stop the scroll and pull the viewer in. (Example uses UGC format, not Street Interview.)' },
+  ],
   projects: [],
   briefs: [],
 };
@@ -325,6 +344,7 @@ function loadState() {
       brands: saved.brands && saved.brands.length ? saved.brands : DEFAULT_STATE.brands,
       angles: saved.angles && saved.angles.length ? saved.angles : DEFAULT_STATE.angles,
       shots: saved.shots && saved.shots.length ? saved.shots : DEFAULT_STATE.shots,
+      hooks: saved.hooks && saved.hooks.length ? saved.hooks : DEFAULT_STATE.hooks,
       projects: saved.projects || [],
       briefs: saved.briefs || [],
     };
@@ -355,6 +375,7 @@ function nav(view, arg) {
     'brief-generation': ['Brief Generation', 'Generate and publish scripts'],
     'angles-db': ['Angles Database', 'Creative angle library'],
     'shots-db': ['Shots Database', 'Shot type library'],
+    'hooks-db': ['Hooks Database', 'Hook playbook — openings that stop the scroll'],
     'brands-db': ['Brands Database', 'Brand and product management'],
   };
 
@@ -372,6 +393,7 @@ function nav(view, arg) {
   else if (view === 'brief-generation') renderBriefGeneration(mc);
   else if (view === 'angles-db') renderAnglesDB(mc);
   else if (view === 'shots-db') renderShotsDB(mc);
+  else if (view === 'hooks-db') renderHooksDB(mc);
   else if (view === 'brands-db') renderBrandsDB(mc);
 }
 
@@ -379,6 +401,7 @@ function updateBadges() {
   document.getElementById('badge-projects').textContent = S.projects.length;
   document.getElementById('badge-angles').textContent = S.angles.length;
   document.getElementById('badge-shots').textContent = S.shots.length;
+  document.getElementById('badge-hooks').textContent = S.hooks.length;
   document.getElementById('badge-brands').textContent = S.brands.length;
 }
 
@@ -1275,6 +1298,135 @@ function addAngle() {
   saveState();
   closeModal();
   nav('angles-db');
+}
+
+// ─── HOOKS DB ─────────────────────────────────────────────────────────────
+function renderHooksDB(mc) {
+  document.getElementById('header-actions').innerHTML = `<button class="btn btn-primary" onclick="showAddHookModal()">+ Add Hook</button>`;
+  mc.innerHTML = S.hooks.map(h => {
+    const formatColor = h.format === 'Organic' ? 'var(--green)' : 'var(--accent)';
+    const formatBg = h.format === 'Organic' ? 'var(--green-light)' : 'var(--accent-light)';
+    const embedHtml = getHookEmbed(h.videoUrl);
+    return `
+      <div class="card" style="margin-bottom:16px;">
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <div style="width:32px;height:32px;background:var(--surface3);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;margin-top:2px;">🪝</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px;">
+              <span style="font-weight:700;font-size:15px;">${h.name}</span>
+              <span style="display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:600;background:${formatBg};color:${formatColor};">${h.format}</span>
+              <span style="font-size:11px;color:var(--text3);">by ${h.contributor}</span>
+            </div>
+            <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">🏷️ ${h.tags}</div>
+            ${h.description ? `<div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:10px;">${h.description}</div>` : ''}
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+              ${h.videoUrl ? `<span style="font-size:11px;color:var(--green);">🎬 video example</span>` : `<span style="font-size:11px;color:var(--text3);">no video yet</span>`}
+              <button class="btn btn-secondary btn-sm" onclick="editHookVideoUrl('${h.id}')">Edit URL</button>
+            </div>
+            ${embedHtml}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function getHookEmbed(url) {
+  if (!url) return '';
+  // Streamable embed
+  const streamMatch = url.match(/streamable\.com\/([a-z0-9]+)$/i);
+  if (streamMatch) {
+    return `<div class="video-embed" style="max-width:480px;margin-top:12px;"><iframe src="https://streamable.com/e/${streamMatch[1]}" frameborder="0" allowfullscreen scrolling="no"></iframe></div>`;
+  }
+  // Frame.io — show as link (requires auth, can't embed)
+  if (url.includes('frame.io')) {
+    return `<div style="margin-top:8px;"><a href="${url}" target="_blank" style="font-size:12px;color:var(--accent);text-decoration:none;">↗ View on Frame.io</a></div>`;
+  }
+  // Generic link
+  return `<div style="margin-top:8px;"><a href="${url}" target="_blank" style="font-size:12px;color:var(--accent);text-decoration:none;">↗ View example</a></div>`;
+}
+
+function editHookVideoUrl(id) {
+  const hook = S.hooks.find(h => h.id === id);
+  if (!hook) return;
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">${hook.name}</div>
+      <div class="modal-sub">Add a Streamable, Vimeo, or Frame.io URL as a video example</div>
+      <div class="form-group">
+        <label class="form-label">Video URL</label>
+        <input class="form-input" id="edit-hook-url" value="${hook.videoUrl || ''}" placeholder="https://streamable.com/...">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveHookVideoUrl('${id}')">Save</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function saveHookVideoUrl(id) {
+  const hook = S.hooks.find(h => h.id === id);
+  if (!hook) return;
+  hook.videoUrl = document.getElementById('edit-hook-url').value.trim();
+  saveState();
+  closeModal();
+  nav('hooks-db');
+}
+
+function showAddHookModal() {
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-title">New Hook</div>
+      <div class="modal-sub">Add a new hook to the playbook</div>
+      <div class="form-group">
+        <label class="form-label">Hook Name</label>
+        <input class="form-input" id="new-hook-name" placeholder="e.g. Reaction Reveal">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tags (industry / niche)</label>
+        <input class="form-input" id="new-hook-tags" placeholder="e.g. Multiple, Beauty & Skincare">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Format</label>
+        <select class="form-select" id="new-hook-format">
+          <option value="Paid Ads">Paid Ads</option>
+          <option value="Organic">Organic</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="new-hook-desc" placeholder="What makes this hook work..."></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Video URL (optional)</label>
+        <input class="form-input" id="new-hook-url" placeholder="https://streamable.com/...">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addHook()">Add Hook</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(m);
+}
+
+function addHook() {
+  const name = document.getElementById('new-hook-name').value.trim();
+  const tags = document.getElementById('new-hook-tags').value.trim();
+  const format = document.getElementById('new-hook-format').value;
+  const description = document.getElementById('new-hook-desc').value.trim();
+  const videoUrl = document.getElementById('new-hook-url').value.trim();
+  if (!name) return;
+  S.hooks.push({ id: uid(), name, contributor: 'Manual', tags, format, description, videoUrl });
+  saveState();
+  closeModal();
+  nav('hooks-db');
 }
 
 function renderShotsDB(mc) {
