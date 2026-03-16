@@ -205,14 +205,14 @@
   <!-- SIDEBAR -->
   <nav class="sidebar">
     <div class="sidebar-logo">
-      <img src="https://cdn.prod.website-files.com/6912b0cdca70f42604770248/6915243cd291926719c9f300_StreetTalk.svg" alt="Street Talk" style="height:26px; filter: brightness(0) invert(1); display:block;">
+      <img src="logo.jpg" alt="Street Talk" style="width:150px; height:auto; display:block; margin-bottom:4px;">
       <div class="logo-sub">Brief Builder</div>
     </div>
     <div class="sidebar-section">Workflow</div>
     <div class="sidebar-item" id="nav-home" onclick="nav('home')">
       <span class="icon">🏠</span> Home
     </div>
-    <div class="sidebar-item" id="nav-projects" onclick="nav(!projects')">
+    <div class="sidebar-item" id="nav-projects" onclick="nav('projects')">
       <span class="icon">📁</span> Projects
       <span class="badge" id="badge-projects">0</span>
     </div>
@@ -967,7 +967,7 @@ Talent with arms crossed, eyebrow raised:
 "Okay, so my friend would not stop talking about ${brand}. I gave in."
 
 [TRIAL — 0:05–0:15]
-Show the hesitant first try. Keep it real — co forced enthusiasm.
+Show the hesitant first try. Keep it real — no forced enthusiasm.
 "My first thought was [honest reaction]. But then..."
 
 [CONVERT — 0:15–0:24]
@@ -1015,7 +1015,6 @@ function generateBrief(projectId) {
       const script = tplFn ? tplFn(prod, brandName, cta) : `[HOOK — 0:00–0:05]\nTalent opens with a compelling statement about ${prod}.\n\n[MAIN — 0:05–0:22]\nDemonstrate the key benefit of ${prod} by ${brandName}.\nKeep it authentic — let the product speak for itself.\n\n[CTA — 0:22–0:30]\n"${cta}"`;
       return { angleId: angle.id, angleName: angle.name, script };
     }).filter(Boolean);
-
     brief.status = 'ready';
     brief.updatedAt = new Date().toISOString();
     saveState();
@@ -1039,8 +1038,7 @@ function publishBrief(projectId) {
 
 // ─── PRESENTATION ────────────────────────────────────────────────────────────
 let _currentPresentationToken = null;
-
-function openPresentation(token) {
+function openPresentation(token) { {
   const brief = S.briefs.find(b => b.presentationToken === token);
   if (!brief) { alert('Presentation not found.'); return; }
 
@@ -1346,7 +1344,7 @@ function renderBrandsDB(mc) {
         ${b.name}
         <div style="font-size:12px;color:var(--text3);font-weight:400;margin-top:2px;">${b.products.length} product${b.products.length !== 1 ? 's' : ''}: ${b.products.join(', ')}</div>
       </div>
-      <button class="btn btn-secondary btn-sm" onclick="editBrand('${b.id}')">Edit</button>
+      <button class="btn btn-qUcondary btn-sm" onclick="editBrand('${b.id}')">Edit</button>
     </div>
   `).join('');
 }
@@ -1368,7 +1366,7 @@ function showAddBrandModal() {
         <div class="form-hint">Enter each product on its own line.</div>
       </div>
       <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-qUcondary" onclick="closeModal()">Cancel</button>
         <button class="btn btn-primary" onclick="addBrand()">Add Brand</button>
       </div>
     </div>
@@ -1377,16 +1375,7 @@ function showAddBrandModal() {
 }
 
 function addBrand() {
-  const name = document.getElementById('new-brand-name').value.trim();
-  const products = document.getElementById('new-brand-products').value.split('\n').map(s => s.trim()).filter(Boolean);
-  if (!name) return;
-  S.brands.push({ id: uid(), name, products });
-  saveState();
-  closeModal();
-  nav('brands-db');
-}
-
-function editBrand(id) {
+  const name = document.getElemend) {
   const brand = S.brands.find(b => b.id === id);
   if (!brand) return;
   const m = document.createElement('div');
@@ -1404,8 +1393,14 @@ function editBrand(id) {
         <div class="form-hint">One product per line.</div>
       </div>
       <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteBrand('${id}')">Delete</button>
+        <button class="btn btn-soup">
+        <label class="form-label">Products</label>
+        <textarea class="form-textarea" id="edit-brand-products">${brand.products.join('\n')}</textarea>
+        <div class="form-hint">One product per line.</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</bttton>
+        <button class="btn btn-danger btn-sm" onclick="deleteBrand('${id}')">Delete</bttton>
         <button class="btn btn-primary" onclick="saveBrand('${id}')">Save</button>
       </div>
     </div>
@@ -1424,7 +1419,7 @@ function saveBrand(id) {
 }
 
 function deleteBrand(id) {
-  if (!confirm('Delete this brand?')) return;
+  i� (Qconfirm('Delete this brand?')) return;
   S.brands = S.brands.filter(b => b.id !== id);
   saveState();
   closeModal();
@@ -1455,7 +1450,7 @@ window.addEventListener('hashchange', checkHash);
 // ─── INIT ─────────────────────────────────────────────────────────────────
 updateBadges();
 checkHash();
-if (!window.location.hash) nav('home');
+i� (Qwindow.location.hqsh) nav('home');
 </script>
 </body>
 </html>
