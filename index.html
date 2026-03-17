@@ -782,21 +782,29 @@ function onSSProjectChange(projectId) {
 }
 
 function openShotPicker(projectId, angleId) {
+  const m = document.createElement('div');
+  m.className = 'modal-overlay';
+  m.id = 'shot-picker-overlay';
+  document.body.appendChild(m);
+  renderShotPicker(projectId, angleId);
+}
+
+function renderShotPicker(projectId, angleId) {
+  const m = document.getElementById('shot-picker-overlay');
+  if (!m) return;
   const brief = S.briefs.find(b => b.projectId === projectId);
   const assignment = (brief?.shotAssignments || []).find(x => x.angleId === angleId) || { shots: [] };
   const assignedIds = assignment.shots.map(s => s.shotId);
 
-  const m = document.createElement('div');
-  m.className = 'modal-overlay';
   m.innerHTML = `
     <div class="modal">
-      <div class="modal-title">Add Shot</div>
-      <div class="modal-sub">Choose a shot type to assign</div>
+      <div class="modal-title">Add Shots</div>
+      <div class="modal-sub">Select multiple shots, then click Done when finished.</div>
       ${S.shots.map(shot => {
         const assigned = assignedIds.includes(shot.id);
         const typeClass = shot.type === 'A-roll' ? 'tag-aroll' : shot.type === 'B-roll' ? 'tag-broll' : 'tag-both';
         return `
-          <div class="db-row" style="cursor:pointer;${assigned ? 'opacity:0.5;' : ''}" onclick="${assigned ? '' : `addShotToAngle('${projectId}','${angleId}','${shot.id}');closeModal();`}">
+          <div class="db-row" style="cursor:${assigned ? 'default' : 'pointer'};${assigned ? 'opacity:0.5;' : ''}" onclick="${assigned ? '' : `addShotToAngle('${projectId}','${angleId}','${shot.id}');renderShotPicker('${projectId}','${angleId}');`}">
             <div class="db-name">${shot.name}</div>
             <span class="tag ${typeClass}">${shot.type}</span>
             ${assigned ? `<span style="font-size:11px;color:var(--green);">✓ Added</span>` : ''}
@@ -806,7 +814,6 @@ function openShotPicker(projectId, angleId) {
       <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Done</button></div>
     </div>
   `;
-  document.body.appendChild(m);
 }
 
 function addShotToAngle(projectId, angleId, shotId) {
