@@ -138,23 +138,23 @@
     .video-placeholder { background: var(--surface3); border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 14px; font-size: 12px; color: var(--text3); text-align: center; margin-top: 8px; }
 
     /* PRESENTATION PAGE */
-    #presentation-overlay { position: fixed; inset: 0; background: #f2f2f4; z-index: 2000; overflow-y: auto; display: none; font-family: inherit; }
-    .pres-header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    #presentation-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; overflow-y: auto; display: none; font-family: inherit; }
+    .pres-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
     .pres-body { max-width: 1120px; margin: 0 auto; padding: 36px 28px; }
-    .pres-stat-chip { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 9px 16px; display: flex; align-items: center; gap: 10px; }
-    .pres-angle-card { background: #fff; border-radius: 16px; margin-bottom: 24px; overflow: hidden; border: 1px solid #e5e7eb; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
-    .pres-card-header { display: flex; align-items: center; padding: 18px 24px; border-bottom: 1px solid #f0f0f0; gap: 14px; }
+    .pres-stat-chip { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 9px 16px; display: flex; align-items: center; gap: 10px; }
+    .pres-angle-card { background: var(--surface); border-radius: 16px; margin-bottom: 24px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 1px 6px rgba(0,0,0,0.2); }
+    .pres-card-header { display: flex; align-items: center; padding: 18px 24px; border-bottom: 1px solid var(--border); gap: 14px; }
     .pres-card-body { display: flex; gap: 28px; padding: 24px; align-items: flex-start; }
     .pres-video-col { flex-shrink: 0; width: 220px; }
     .pres-script-col { flex: 1; min-width: 0; }
-    .pres-tab-bar { display: flex; border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
-    .pres-tab { flex: 1; padding: 8px 10px; background: #f9f9f9; border: none; border-right: 1px solid #e0e0e0; font-size: 12px; font-weight: 500; color: #888; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: background 0.1s; }
+    .pres-tab-bar { display: flex; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+    .pres-tab { flex: 1; padding: 8px 10px; background: var(--surface2); border: none; border-right: 1px solid var(--border); font-size: 12px; font-weight: 500; color: var(--text3); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: background 0.1s; }
     .pres-tab:last-child { border-right: none; }
-    .pres-tab.active { background: #fff; font-weight: 700; color: #111; }
-    .pres-script-box { background: #f8f8fb; border: 1px solid #ebebeb; border-radius: 10px; padding: 18px; font-size: 13px; color: #333; line-height: 1.75; white-space: pre-wrap; }
+    .pres-tab.active { background: var(--surface3); font-weight: 700; color: var(--text); }
+    .pres-script-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 18px; font-size: 13px; color: var(--text2); line-height: 1.75; white-space: pre-wrap; }
     .pres-approve-btn { display: flex; align-items: center; gap: 5px; padding: 7px 16px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; }
-    .pres-comment-btn { display: flex; align-items: center; gap: 5px; padding: 7px 14px; background: #f4f4f5; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #555; }
-    .pres-collapse-btn { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #f5f0ff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; color: #7c3aed; cursor: pointer; }
+    .pres-comment-btn { display: flex; align-items: center; gap: 5px; padding: 7px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text2); }
+    .pres-collapse-btn { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: var(--accent-light); border: none; border-radius: 8px; font-size: 12px; font-weight: 600; color: var(--accent); cursor: pointer; }
 
     /* COMMENT SECTION */
     .comment-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-top: 14px; }
@@ -272,11 +272,11 @@
   <div class="pres-header">
     <div style="display:flex;align-items:center;gap:10px;">
       <div style="width:28px;height:28px;background:linear-gradient(135deg,#f472b6,#a855f7);border-radius:6px;"></div>
-      <span style="font-size:14px;font-weight:700;color:#333;">Street Talk Brief Builder</span>
+      <span style="font-size:14px;font-weight:700;color:var(--text);">Street Talk Brief Builder</span>
     </div>
     <div style="display:flex;gap:10px;align-items:center;">
-      <button style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:#f4f4f5;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#555;" onclick="copyShareLink()">🔗 Copy Link</button>
-      <button style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:#f4f4f5;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#555;" onclick="closePresentation()">✕ Close</button>
+      <button class="pres-comment-btn" onclick="copyShareLink()">🔗 Copy Link</button>
+      <button class="pres-comment-btn" onclick="closePresentation()">✕ Close</button>
     </div>
   </div>
   <div class="pres-body" id="pres-body"></div>
@@ -415,7 +415,7 @@ function updateBadges() {
   document.getElementById('badge-brands').textContent = S.brands.length;
 }
 
-// ─── HOME ─────────────────────────────────────────────────────────────
+// ─── HOME ─────────────────────────────────────────────────────────────────
 function renderHome(mc) {
   const published = S.briefs.filter(b => b.status === 'published').length;
   const ready = S.briefs.filter(b => b.status === 'ready').length;
@@ -458,7 +458,7 @@ function renderHome(mc) {
               </div>
               <span class="status-pill status-${brief ? brief.status : 'draft'}">${brief ? brief.status : 'draft'}</span>
             </div>`;
-          }).j        }).join('')
+          }).join('')
         }
       </div>
     </div>
