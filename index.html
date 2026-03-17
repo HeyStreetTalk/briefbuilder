@@ -138,16 +138,23 @@
     .video-placeholder { background: var(--surface3); border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 14px; font-size: 12px; color: var(--text3); text-align: center; margin-top: 8px; }
 
     /* PRESENTATION PAGE */
-    #presentation-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 2000; overflow-y: auto; display: none; }
-    .pres-header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 18px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
-    .pres-body { max-width: 860px; margin: 0 auto; padding: 40px 28px; }
-    .pres-angle { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 26px; margin-bottom: 24px; }
-    .pres-angle-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-    .pres-angle-name { font-size: 18px; font-weight: 700; }
-    .pres-section-label { font-size: 11px; text-transform: uppercase; color: var(--text3); font-weight: 700; letter-spacing: 0.5px; margin: 14px 0 8px; }
-    .shot-row { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
-    .shot-row .shot-name { font-weight: 600; font-size: 13px; }
-    .shot-row .shot-note { font-size: 12px; color: var(--text2); margin-top: 2px; }
+    #presentation-overlay { position: fixed; inset: 0; background: #f2f2f4; z-index: 2000; overflow-y: auto; display: none; font-family: inherit; }
+    .pres-header { background: #fff; border-bottom: 1px solid #e5e7eb; padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
+    .pres-body { max-width: 1120px; margin: 0 auto; padding: 36px 28px; }
+    .pres-stat-chip { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 9px 16px; display: flex; align-items: center; gap: 10px; }
+    .pres-angle-card { background: #fff; border-radius: 16px; margin-bottom: 24px; overflow: hidden; border: 1px solid #e5e7eb; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .pres-card-header { display: flex; align-items: center; padding: 18px 24px; border-bottom: 1px solid #f0f0f0; gap: 14px; }
+    .pres-card-body { display: flex; gap: 28px; padding: 24px; align-items: flex-start; }
+    .pres-video-col { flex-shrink: 0; width: 220px; }
+    .pres-script-col { flex: 1; min-width: 0; }
+    .pres-tab-bar { display: flex; border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden; margin-bottom: 16px; }
+    .pres-tab { flex: 1; padding: 8px 10px; background: #f9f9f9; border: none; border-right: 1px solid #e0e0e0; font-size: 12px; font-weight: 500; color: #888; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: background 0.1s; }
+    .pres-tab:last-child { border-right: none; }
+    .pres-tab.active { background: #fff; font-weight: 700; color: #111; }
+    .pres-script-box { background: #f8f8fb; border: 1px solid #ebebeb; border-radius: 10px; padding: 18px; font-size: 13px; color: #333; line-height: 1.75; white-space: pre-wrap; }
+    .pres-approve-btn { display: flex; align-items: center; gap: 5px; padding: 7px 16px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; }
+    .pres-comment-btn { display: flex; align-items: center; gap: 5px; padding: 7px 14px; background: #f4f4f5; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; color: #555; }
+    .pres-collapse-btn { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: #f5f0ff; border: none; border-radius: 8px; font-size: 12px; font-weight: 600; color: #7c3aed; cursor: pointer; }
 
     /* COMMENT SECTION */
     .comment-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-top: 14px; }
@@ -263,13 +270,13 @@
 <!-- PRESENTATION OVERLAY -->
 <div id="presentation-overlay">
   <div class="pres-header">
-    <div>
-      <div style="font-size:18px;font-weight:700;" id="pres-title">Brief Presentation</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:3px;" id="pres-meta"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="width:28px;height:28px;background:linear-gradient(135deg,#f472b6,#a855f7);border-radius:6px;"></div>
+      <span style="font-size:14px;font-weight:700;color:#333;">Street Talk Brief Builder</span>
     </div>
     <div style="display:flex;gap:10px;align-items:center;">
-      <button class="btn btn-secondary btn-sm" onclick="copyShareLink()">🔗 Copy Link</button>
-      <button class="btn btn-secondary btn-sm" onclick="closePresentation()">✕ Close</button>
+      <button style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:#f4f4f5;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#555;" onclick="copyShareLink()">🔗 Copy Link</button>
+      <button style="display:flex;align-items:center;gap:6px;padding:7px 14px;background:#f4f4f5;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#555;" onclick="closePresentation()">✕ Close</button>
     </div>
   </div>
   <div class="pres-body" id="pres-body"></div>
@@ -303,16 +310,14 @@ const DEFAULT_STATE = {
     { id: 'a12', name: 'Founder Story', category: 'Brand', description: 'The founder shares the authentic reason the product was created.', videoUrl: '' },
   ],
   shots: [
-    { id: 's1', name: 'Close-up Product Detail', type: 'B-roll', description: 'Tight shot highlighting texture, label, or unique product feature.' },
+    { id: 's1', name: 'Close-up Product Detail', type: 'B-roll', description: 'Tight shot highlighting texture, label, or inque product feature.' },
     { id: 's2', name: 'Talent Reaction Shot', type: 'A-roll', description: 'Facial expression / emotional reaction from talent on camera.' },
     { id: 's3', name: 'Overhead Flat Lay', type: 'B-roll', description: 'Top-down styled product shot with supporting elements.' },
-    { id: 's4', name: 'Talent Talking to Camera', type: 'A-roll', description: 'Direct address — talent speaks directly to the viewer.' },
-    { id: 's5', name: 'Application / Usage Demo', type: 'Both', description: 'Shows the product being applied or used in real time.' },
-    { id: 's6', name: 'Walk & Talk', type: 'A-roll', description: 'Talent walks while speaking — creates natural, candid energy.' },
-    { id: 's7', name: 'Before State (Frustration)', type: 'Both', description: 'Captures the pain point or frustration before using the product.' },
-    { id: 's8', name: 'After State (Transformation)', type: 'Both', description: 'Visual payoff showing the positive result after using the product.' },
-    { id: 's9', name: 'Street Interview (Candid)', type: 'A-roll', description: 'On-street or public-space interview with natural audio.' },
-    { id: 's10', name: 'Lifestyle Context Shot', type: 'B-roll', description: 'Product in natural environment — gym, bathroom, kitchen etc.' },
+    { id: 's4', name: 'Talent Talking to Camera', type: 'A-roll', description: 'Direct address └ talent speaks directly to the vi]�\���K��Y�	��I��[YN�	�\X�][ۈ�\�Y�H[[��\N�	Л�	�\�ܚ\[ێ�	�����H��X��Z[��\YY܈\�Y[��X[[YK��K��Y�	�͉��[YN�	��[�	�[��\N�	�K\��	�\�ܚ\[ێ�	�[[��[���[H�XZ�[��8�%ܙX]\��]\�[�[�Y[�\��K��K��Y�	�����[YN�	ЙY�ܙH�]H
+��\��][ۊI�\N�	Л�	�\�ܚ\[ێ�	��\\�\�HZ[��[�܈��\��][ۈ�Y�ܙH\�[��H��X���K��Y�	��	��[YN�	�Y�\��]H
+�[�ٛܛX][ۊI�\N�	Л�	�\�ܚ\[ێ�	՚\�X[^[ٙ����[��H��]]�H�\�[Y�\�\�[��H��X���K��Y�	��I��[YN�	���Y][�\��Y]�
+�[�Y
+I�\N�	�K\��	�\�ܚ\[ێ�	�ۋ\��Y]܈X�X�\�X�H[�\��Y]��]�]\�[]Y[ˉ�K��Y�	��L	��[YN�	�ifestyle Context Shot', type: 'B-roll', description: 'Product in natural environment — gym, bathroom, kitchen etc.' },
     { id: 's11', name: 'Voiceover + B-roll', type: 'B-roll', description: 'Narration over relevant visual footage.' },
     { id: 's12', name: 'CTA End Card', type: 'Both', description: 'Clear on-screen call to action with talent or product.' },
   ],
@@ -322,7 +327,7 @@ const DEFAULT_STATE = {
     { id: 'h3', name: 'Splitscreen', contributor: 'Luke Thorburg', tags: 'Health Fitness Wellness', format: 'Paid Ads', videoUrl: '', description: 'Two scenes side-by-side — compare, contrast, or show simultaneous action to create visual tension.' },
     { id: 'h4', name: 'Outcome Reveal', contributor: 'Luke Thorburg', tags: 'Consumer App, Multiple', format: 'Paid Ads', videoUrl: '', description: 'Similar to Product Reaction, except focus on the interviewee\'s emotion when the outcome is revealed.' },
     { id: 'h5', name: 'Problem Question', contributor: 'Luke Thorburg', tags: 'Multiple, Beauty & Skincare', format: 'Paid Ads', videoUrl: '', description: 'Open with a direct question that names the viewer\'s pain point, pulling in anyone who relates.' },
-    { id: 'h6', name: 'No Hook', contributor: 'Luke Thorburg', tags: 'Multiple', format: 'Organic', videoUrl: '', description: 'Jump straight into the content — no setup, no tease. Works best for organic content where authenticity matters most.' },
+    { id: 'h6', name: 'No Hook', contributor: 'Luke Thorburg', tags: 'Multiple', format: 'Organic', videoUrl: '', description: 'Jump straight into the content — do setup, no tease. Works best for organic content where authenticity matters most.' },
     { id: 'h7', name: 'Public Interruption', contributor: 'Luke Thorburg', tags: 'Multiple', format: 'Organic', videoUrl: '', description: 'The talent or interviewer interrupts a public scene — creates instant curiosity and a sense of unscripted energy.' },
     { id: 'h8', name: 'Customer Callout', contributor: 'Luke Thorburg', tags: 'Health Fitness Wellness, Beauty & Skincare', format: 'Paid Ads', videoUrl: '', description: 'Directly address a specific type of customer by calling them out by identity, habit, or problem.' },
     { id: 'h9', name: 'Product Reaction', contributor: 'Luke Thorburg', tags: 'Beauty & Skincare', format: 'Paid Ads', videoUrl: '', description: 'Similar to Outcome Reveal, except focused on the physical product interaction and the immediate reaction it triggers.' },
@@ -772,7 +777,7 @@ function onSSProjectChange(projectId) {
                     <input class="form-input" style="margin-top:4px;" placeholder="Shot notes (optional)..." value="${sh.notes || ''}" oninput="updateShotNotes('${projectId}','${sa.angleId}',${idx},this.value)">
                   </div>
                 </div>
-               `;
+              `;
             }).join('')
           }
         </div>
@@ -796,7 +801,7 @@ function renderShotPicker(projectId, angleId) {
   const m = document.getElementById('shot-picker-overlay');
   if (!m) return;
   const brief = S.briefs.find(b => b.projectId === projectId);
-  const assignment = (brief?.shotAssignments || []).find(x => x.angleId == angleId) || { shots: [] };
+  const assignment = (brief?.shotAssignments || []).find(x => x.angleId === angleId) || { shots: [] };
   const assignedIds = assignment.shots.map(s => s.shotId);
 
   m.innerHTML = `
@@ -1025,7 +1030,7 @@ Talent with arms crossed, eyebrow raised:
 "Okay, so my friend would not stop talking about ${brand}. I gave in."
 
 [TRIAL — 0:05–0:15]
-Show the hesitant first try. Keep it real — no forced enthusiasm.
+Show the hesitant first try. Keep it real — do forced enthusiasm.
 "My first thought was [honest reaction]. But then..."
 
 [CONVERT — 0:15–0:24]
@@ -1106,9 +1111,6 @@ function openPresentation(token) {
   const project = S.projects.find(p => p.id === brief.projectId);
   const brand = project ? S.brands.find(b => b.id === project.brandId) : null;
 
-  document.getElementById('pres-title').textContent = project ? `${project.productName} — Round ${project.roundNumber}` : 'Brief Presentation';
-  document.getElementById('pres-meta').textContent = brand ? `${brand.name} · ${new Date(brief.updatedAt).toLocaleDateString()}` : '';
-
   const body = document.getElementById('pres-body');
   body.innerHTML = renderPresentationBody(brief, project, brand);
 
@@ -1117,77 +1119,203 @@ function openPresentation(token) {
 }
 
 function renderPresentationBody(brief, project, brand) {
-  if (!brief.selectedAngles.length) return '<div style="color:var(--text3);text-align:center;padding:60px;">No angles in this brief.</div>';
+  if (!brief.selectedAngles.length) return '<div style="color:#999;text-align:center;padding:60px;">No angles in this brief.</div>';
 
-  const prod = project ? project.productName : 'the product';
-  const cta = brief.cta || '';
+  const brandName = brand ? brand.name : (project ? project.productName : 'Client');
+  const productName = project ? project.productName : brandName;
+  const roundLabel = project ? `Month ${project.roundNumber}` : 'Round 1';
+  const totalScripts = (brief.generatedScripts || []).length;
   const guidelines = brief.guidelines || '';
+  const cta = brief.cta || '';
 
-  let html = '';
-  if (guidelines || cta) {
-    html += `<div class="card" style="margin-bottom:24px;">
-      ${guidelines ? `<div><span style="font-weight:700;">Guidelines:</span> <span style="color:var(--text2);">${guidelines}</span></div>` : ''}
-      ${cta ? `<div style="margin-top:${guidelines ? 8 : 0}px;"><span style="font-weight:700;">CTA:</span> <span style="color:var(--text2);">${cta}</span></div>` : ''}
-    </div>`;
-  }
+  // ── PAGE HEADER ──────────────────────────────────────────────────────────
+  let html = `
+    <div style="margin-bottom:36px;">
+      <div style="font-size:38px;font-weight:900;text-transform:uppercase;color:#d42b4a;letter-spacing:0.5px;line-height:1.1;">${productName}</div>
+      <div style="font-size:14px;color:#888;margin-top:6px;font-weight:500;">${roundLabel} Campaign Brief</div>
+      <div style="display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;">
+        <div class="pres-stat-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          <div><div style="font-size:10px;text-transform:uppercase;color:#aaa;font-weight:700;letter-spacing:0.5px;">Client</div><div style="font-size:12px;font-weight:700;color:#222;">${brandName}</div></div>
+        </div>
+        <div class="pres-stat-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <div><div style="font-size:10px;text-transform:uppercase;color:#aaa;font-weight:700;letter-spacing:0.5px;">Service Month</div><div style="font-size:12px;font-weight:700;color:#222;">${roundLabel}</div></div>
+        </div>
+        <div class="pres-stat-chip">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#aaa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <div><div style="font-size:10px;text-transform:uppercase;color:#aaa;font-weight:700;letter-spacing:0.5px;">Total Scripts</div><div style="font-size:12px;font-weight:700;color:#222;">${totalScripts}</div></div>
+        </div>
+      </div>
+      ${(guidelines || cta) ? `
+      <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px 20px;margin-top:20px;display:flex;gap:24px;flex-wrap:wrap;">
+        ${guidelines ? `<div><span style="font-size:11px;font-weight:700;text-transform:uppercase;color:#aaa;letter-spacing:0.5px;">Guidelines</span><div style="font-size:13px;color:#444;margin-top:4px;">${guidelines}</div></div>` : ''}
+        ${cta ? `<div><span style="font-size:11px;font-weight:700;text-transform:uppercase;color:#aaa;letter-spacing:0.5px;">CTA</span><div style="font-size:13px;color:#444;margin-top:4px;">${cta}</div></div>` : ''}
+      </div>` : ''}
+    </div>
+  `;
 
-  html += brief.selectedAngles.map(sa => {
+  // Accent palette per angle index
+  const palettes = [
+    ['#f472b6','#a855f7'],['#60a5fa','#818cf8'],['#34d399','#059669'],
+    ['#fb923c','#ef4444'],['#a78bfa','#7c3aed'],['#38bdf8','#0ea5e9'],
+  ];
+
+  // ── ANGLE CARDS ──────────────────────────────────────────────────────────
+  html += brief.selectedAngles.map((sa, idx) => {
     const angle = S.angles.find(a => a.id === sa.angleId);
     if (!angle) return '';
-    const assignment = (brief.shotAssignments || []).find(x => x.angleId === sa.angleId);
-    const scriptObj = (brief.generatedScripts || []).find(g => g.angleId === sa.angleId);
-    const approved = brief.approvals && brief.approvals[sa.angleId];
-    const comments = (brief.comments || []).filter(c => c.angleId === sa.angleId);
 
+    const assignment = (brief.shotAssignments || []).find(x => x.angleId === sa.angleId);
+    const scriptObj  = (brief.generatedScripts || []).find(g => g.angleId === sa.angleId);
+    const approved   = brief.approvals && brief.approvals[sa.angleId];
+    const comments   = (brief.comments || []).filter(c => c.angleId === sa.angleId);
+    const scriptNum  = idx + 1;
+    const [c1, c2]   = palettes[idx % palettes.length];
+
+    // Approve button styling
+    const appBg    = approved === true ? '#dcfce7' : approved === false ? '#fee2e2' : '#fce7f3';
+    const appColor = approved === true ? '#16a34a' : approved === false ? '#dc2626' : '#db2777';
+    const appLabel = approved === true ? '✓ Approved' : approved === false ? '✗ Rejected' : 'Approve Script';
+
+    // ── VIDEO panel (left column) ──────────────────────────────────────────
+    const embedUrl = getEmbedUrl(angle.videoUrl);
+    const videoHtml = angle.videoUrl
+      ? (embedUrl
+          ? `<div style="aspect-ratio:9/16;border-radius:12px;overflow:hidden;background:#000;"><iframe src="${embedUrl}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe></div>`
+          : `<div style="aspect-ratio:9/16;border-radius:12px;background:#f0f0f2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:16px;">
+               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#bbb" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+               <a href="${angle.videoUrl}" target="_blank" style="font-size:12px;color:#e8244a;font-weight:600;text-decoration:none;">Watch Example →</a>
+             </div>`)
+      : `<div style="aspect-ratio:9/16;border-radius:12px;background:#f0f0f2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;">
+           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#ccc" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/></svg>
+           <div style="font-size:11px;color:#bbb;text-align:center;">No example video</div>
+         </div>`;
+
+    // ── SHOTS tab ─────────────────────────────────────────────────────────
+    const shotsHtml = (assignment && assignment.shots.length)
+      ? assignment.shots.map(sh => {
+          const shot = S.shots.find(s => s.id === sh.shotId);
+          const tc = sh.type === 'A-roll' ? '#16a34a' : sh.type === 'B-roll' ? '#2563eb' : '#7c3aed';
+          const tb = sh.type === 'A-roll' ? '#dcfce7' : sh.type === 'B-roll' ? '#dbeafe' : '#ede9fe';
+          return `<div style="background:#f9f9f9;border-radius:8px;padding:10px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;">
+            <span style="display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;background:${tb};color:${tc};flex-shrink:0;margin-top:2px;">${sh.type}</span>
+            <div><div style="font-weight:600;font-size:13px;color:#222;">${shot ? shot.name : sh.shotId}</div>
+            ${sh.notes ? `<div style="font-size:12px;color:#666;margin-top:2px;">${sh.notes}</div>` : ''}</div>
+          </div>`;
+        }).join('')
+      : `<div style="color:#aaa;font-size:13px;padding:16px 0;">No shots assigned to this angle.</div>`;
+
+    // ── HOOKS tab ─────────────────────────────────────────────────────────
+    const hooksHtml = angle.videoUrl
+      ? (embedUrl
+          ? `<div style="font-size:13px;color:#333;font-weight:600;margin-bottom:12px;">Hook Example Video</div>
+             <div style="aspect-ratio:9/16;max-width:200px;border-radius:10px;overflow:hidden;background:#000;"><iframe src="${embedUrl}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe></div>`
+          : `<div style="font-size:13px;color:#333;font-weight:600;margin-bottom:12px;">Hook Example</div>
+             <a href="${angle.videoUrl}" target="_blank" style="display:inline-flex;align-items:center;gap:6px;color:#e8244a;font-size:13px;font-weight:600;text-decoration:none;">🔗 View Hook Example</a>`)
+      : `<div style="color:#aaa;font-size:13px;padding:16px 0;">No hook video assigned to this angle.</div>`;
+
+    // ── COMMENT tab ───────────────────────────────────────────────────────
+    const commentHtml = `
+      ${comments.map(c => `
+        <div style="border-bottom:1px solid #f0f0f0;padding:10px 0;">
+          <div style="font-size:11px;color:#aaa;margin-bottom:4px;">${c.author} · ${new Date(c.createdAt).toLocaleString()}</div>
+          <div style="font-size:13px;color:#333;">${c.text}</div>
+        </div>`).join('')}
+      ${comments.length === 0 ? `<div style="color:#aaa;font-size:13px;margin-bottom:12px;">No comments yet.</div>` : ''}
+      <div style="display:flex;gap:8px;margin-top:10px;">
+        <input id="comment-input-${sa.angleId}" placeholder="Add a comment..."
+          style="flex:1;padding:8px 12px;background:#fff;border:1px solid #e0e0e0;color:#222;border-radius:8px;font-family:inherit;font-size:13px;outline:none;"
+          onkeydown="if(event.key==='Enter')addComment('${brief.id}','${sa.angleId}')">
+        <button onclick="addComment('${brief.id}','${sa.angleId}')"
+          style="padding:8px 16px;background:#f4f4f5;border:1px solid #e0e0e0;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:#444;">Post</button>
+      </div>`;
+
+    // ── CARD HTML ─────────────────────────────────────────────────────────
     return `
-      <div class="pres-angle" id="pres-angle-${sa.angleId}">
-        <div class="pres-angle-header">
-          <div>
-            <div style="font-size:11px;color:var(--accent);text-transform:uppercase;font-weight:700;margin-bottom:4px;">${angle.category}</div>
-            <div class="pres-angle-name">${angle.name}</div>
-            <div style="font-size:13px;color:var(--text2);margin-top:4px;">${angle.description}</div>
+      <div class="pres-angle-card" id="pres-angle-${sa.angleId}">
+
+        <!-- Card header row -->
+        <div class="pres-card-header">
+          <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
           </div>
-          <button class="approval-btn ${approved === true ? 'approved' : approved === false ? 'rejected' : ''}" onclick="toggleApproval('${brief.id}','${sa.angleId}',this)">
-            ${approved === true ? '✓ Approved' : approved === false ? '✗ Rejected' : 'Approve?'}
+          <div style="flex:1;">
+            <div style="font-size:17px;font-weight:700;color:#111;display:flex;align-items:center;gap:8px;">
+              ${angle.name}
+              <span style="width:8px;height:8px;border-radius:50%;background:#fbbf24;display:inline-block;"></span>
+            </div>
+            <div style="font-size:12px;color:#aaa;margin-top:2px;">${scriptObj ? '1 script' : '0 scripts'}</div>
+          </div>
+          <button class="pres-collapse-btn" onclick="toggleAngleCollapse('${sa.angleId}')">
+            <svg id="pres-chevron-${sa.angleId}" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+            <span>Collapse</span>
+            <span style="font-size:11px;opacity:0.7;">Hide details</span>
           </button>
         </div>
 
-        ${angle.videoUrl ? `
-          <div class="pres-section-label">Example Video</div>
-          ${getEmbedUrl(angle.videoUrl) ? `<div class="video-embed"><iframe src="${getEmbedUrl(angle.videoUrl)}" allowfullscreen></iframe></div>` : `<a href="${angle.videoUrl}" target="_blank" style="color:var(--accent);">Watch example →</a>`}
-        ` : ''}
+        <!-- Card body: video + script tabs -->
+        <div class="pres-card-body" id="pres-content-${sa.angleId}">
 
-        ${assignment && assignment.shots.length ? `
-          <div class="pres-section-label">📹 Shots</div>
-          ${assignment.shots.map(sh => {
-            const shot = S.shots.find(s => s.id === sh.shotId);
-            const typeClass = sh.type === 'A-roll' ? 'tag-aroll' : sh.type === 'B-roll' ? 'tag-broll' : 'tag-both';
-            return `<div class="shot-row">
-              <span class="tag ${typeClass}">${shot ? shot.type : sh.type}</span>
-              <div><div class="shot-name">${shot ? shot.name : sh.shotId}</div>${sh.notes ? `<div class="shot-note">${sh.notes}</div>` : ''}</div>
-            </div>`;
-          }).join('')}
-        ` : ''}
+          <!-- Left: example video -->
+          <div class="pres-video-col">${videoHtml}</div>
 
-        ${scriptObj ? `
-          <div class="pres-section-label">📝 Script</div>
-          <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:16px;">
-            <pre style="font-family:inherit;font-size:13px;color:var(--text2);white-space:pre-wrap;line-height:1.7;">${scriptObj.script}</pre>
-          </div>
-        ` : ''}
+          <!-- Right: script panel -->
+          <div class="pres-script-col">
 
-        <div class="pres-section-label">💬 Comments</div>
-        <div class="comment-box">
-          ${comments.length === 0 ? `<div style="color:var(--text3);font-size:12px;">No comments yet.</div>` :
-            comments.map(c => `
-              <div class="comment-item">
-                <div class="comment-meta">${c.author} · ${new Date(c.createdAt).toLocaleString()}</div>
-                <div class="comment-text">${c.text}</div>
+            <!-- Row: script number + action buttons -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+              <div style="display:flex;align-items:center;gap:8px;">
+                <div style="width:26px;height:26px;border-radius:6px;background:linear-gradient(135deg,${c1},${c2});display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;">${scriptNum}</div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span style="font-size:14px;font-weight:700;color:#333;">Script #${scriptNum}</span>
               </div>
-            `).join('')}
-          <div class="comment-add">
-            <input id="comment-input-${sa.angleId}" placeholder="Add a comment..." onkeydown="if(event.key==='Enter')addComment('${brief.id}','${sa.angleId}')">
-            <button class="btn btn-secondary btn-sm" onclick="addComment('${brief.id}','${sa.angleId}')">Post</button>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <button class="pres-comment-btn" onclick="presTabSwitch('${sa.angleId}','comment')">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  Comment
+                </button>
+                <button class="pres-approve-btn" style="background:${appBg};color:${appColor};"
+                  onclick="toggleApproval('${brief.id}','${sa.angleId}',this)">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  ${appLabel}
+                </button>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="pres-tab-bar">
+              <button id="ptab-${sa.angleId}-full-script" class="pres-tab active" onclick="presTabSwitch('${sa.angleId}','full-script')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Full Script
+              </button>
+              <button id="ptab-${sa.angleId}-shots" class="pres-tab" onclick="presTabSwitch('${sa.angleId}','shots')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+                Shots
+              </button>
+              <button id="ptab-${sa.angleId}-hooks" class="pres-tab" onclick="presTabSwitch('${sa.angleId}','hooks')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                Hooks
+              </button>
+              <button id="ptab-${sa.angleId}-creators" class="pres-tab" onclick="presTabSwitch('${sa.angleId}','creators')">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Creators
+              </button>
+            </div>
+
+            <!-- Tab panels -->
+            <div id="ptabpanel-${sa.angleId}-full-script">
+              ${scriptObj
+                ? `<div class="pres-script-box">${scriptObj.script.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>`
+                : `<div style="color:#aaa;font-size:13px;padding:16px 0;">No script generated yet.</div>`}
+            </div>
+            <div id="ptabpanel-${sa.angleId}-shots" style="display:none;">${shotsHtml}</div>
+            <div id="ptabpanel-${sa.angleId}-hooks" style="display:none;">${hooksHtml}</div>
+            <div id="ptabpanel-${sa.angleId}-creators" style="display:none;">
+              <div style="color:#aaa;font-size:13px;padding:16px 0;">No creators assigned yet.</div>
+            </div>
+            <div id="ptabpanel-${sa.angleId}-comment" style="display:none;">${commentHtml}</div>
+
           </div>
         </div>
       </div>
@@ -1202,10 +1330,50 @@ function toggleApproval(briefId, angleId, btn) {
   if (!brief) return;
   if (!brief.approvals) brief.approvals = {};
   const cur = brief.approvals[angleId];
-  if (cur === true) { brief.approvals[angleId] = false; btn.className = 'approval-btn rejected'; btn.textContent = '✗ Rejected'; }
-  else if (cur === false) { delete brief.approvals[angleId]; btn.className = 'approval-btn'; btn.textContent = 'Approve?'; }
-  else { brief.approvals[angleId] = true; btn.className = 'approval-btn approved'; btn.textContent = '✓ Approved'; }
+  let next;
+  if (cur === true) { brief.approvals[angleId] = false; next = false; }
+  else if (cur === false) { delete brief.approvals[angleId]; next = null; }
+  else { brief.approvals[angleId] = true; next = true; }
   saveState();
+  // Update button style in-place (works for both old and new presentation UI)
+  if (btn && btn.classList.contains('pres-approve-btn')) {
+    const bg    = next === true ? '#dcfce7' : next === false ? '#fee2e2' : '#fce7f3';
+    const color = next === true ? '#16a34a' : next === false ? '#dc2626' : '#db2777';
+    const label = next === true ? '✓ Approved' : next === false ? '✗ Rejected' : 'Approve Script';
+    btn.style.background = bg; btn.style.color = color;
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> ${label}`;
+  } else if (btn) {
+    // Legacy fallback
+    if (next === true) { btn.className = 'approval-btn approved'; btn.textContent = '✓ Approved'; }
+    else if (next === false) { btn.className = 'approval-btn rejected'; btn.textContent = '✗ Rejected'; }
+    else { btn.className = 'approval-btn'; btn.textContent = 'Approve?'; }
+  }
+}
+
+function presTabSwitch(angleId, tab) {
+  const tabs = ['full-script','shots','hooks','creators','comment'];
+  tabs.forEach(t => {
+    const panel = document.getElementById(`ptabpanel-${angleId}-${t}`);
+    const btn   = document.getElementById(`ptab-${angleId}-${t}`);
+    if (panel) panel.style.display = 'none';
+    if (btn)   btn.classList.remove('active');
+  });
+  const activePanel = document.getElementById(`ptabpanel-${angleId}-${tab}`);
+  const activeBtn   = document.getElementById(`ptab-${angleId}-${tab}`);
+  if (activePanel) activePanel.style.display = 'block';
+  if (activeBtn)   activeBtn.classList.add('active');
+}
+
+function toggleAngleCollapse(angleId) {
+  const content = document.getElementById(`pres-content-${angleId}`);
+  const icon    = document.getElementById(`pres-chevron-${angleId}`);
+  if (!content) return;
+  const isHidden = content.style.display === 'none';
+  content.style.display = isHidden ? 'flex' : 'none';
+  if (icon) icon.style.transform = isHidden ? '' : 'rotate(180deg)';
+  // Update button label
+  const btn = content.previousElementSibling && content.previousElementSibling.querySelector('.pres-collapse-btn span');
+  if (btn) btn.textContent = isHidden ? 'Collapse' : 'Expand';
 }
 
 function addComment(briefId, angleId) {
