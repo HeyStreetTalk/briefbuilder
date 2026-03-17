@@ -130,7 +130,7 @@
     .script-text { font-size: 13px; color: var(--text2); line-height: 1.7; white-space: pre-wrap; }
 
     /* VIDEO PREVIEW */
-    .video-embed { margin-top: 10px; border-radius: var(--radius-sm); overflow: hidden; background: #000; aspect-ratio: 16/9; }
+    .video-embed { margin-top: 10px; border-radius: var(--radius-sm); overflow: hidden; background: #000; aspect-ratio: 9/16; max-width: 360px; }
     .video-embed iframe { width: 100%; height: 100%; border: none; }
     .video-placeholder { background: var(--surface3); border: 1px dashed var(--border); border-radius: var(--radius-sm); padding: 14px; font-size: 12px; color: var(--text3); text-align: center; margin-top: 8px; }
 
@@ -1131,7 +1131,7 @@ function renderPresentationBody(brief, project, brand) {
 
         ${assignment && assignment.shots.length ? `
           <div class="pres-section-label">📹 Shots</div>
-          ${assignment.shots.map(sh => {
+            ${assignment.shots.map(sh => {
             const shot = S.shots.find(s => s.id === sh.shotId);
             const typeClass = sh.type === 'A-roll' ? 'tag-aroll' : sh.type === 'B-roll' ? 'tag-broll' : 'tag-both';
             return `<div class="shot-row">
@@ -1144,7 +1144,7 @@ function renderPresentationBody(brief, project, brand) {
         ${scriptObj ? `
           <div class="pres-section-label">📝 Script</div>
           <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:16px;">
-            <pre style="font-family:inherit;font-size:13px;color:var(--text2);white-space:pre-wrap;line-height:1.7;">${scriptObj.script}</pre>
+            <pre styl"font-family:inherit;font-size:13px;color:var(--text2);white-space:pre-wrap;line-height:1.7;">${scriptObj.script}</pre>
           </div>
         ` : ''}
 
@@ -1327,7 +1327,7 @@ function renderHooksDB(mc) {
             <div style="font-size:12px;color:var(--text3);margin-bottom:8px;">🏷️ ${h.tags}</div>
             ${h.description ? `<div style="font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:10px;">${h.description}</div>` : ''}
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-              ${h.videoUrl ? `<span style="font-size:11px;color:var(--green);">🎬 video example</span>` : `<span style="font-size:11px;color:var(--text3);">no video yet</span>`}
+              ${h.videoUrl ? `<span style="font-size:11px;color:var(--green);">🎬 video example</span>` : `<span style="font-size:11px;color:var(--text3);">no video 9et</span>`}
               <button class="btn btn-secondary btn-sm" onclick="editHookVideoUrl('${h.id}')">Edit URL</button>
             </div>
             ${embedHtml}
@@ -1343,11 +1343,11 @@ function getHookEmbed(url) {
   // Streamable embed
   const streamMatch = url.match(/streamable\.com\/([a-z0-9]+)$/i);
   if (streamMatch) {
-    return `<div class="video-embed" style="max-width:480px;margin-top:12px;"><iframe src="https://streamable.com/e/${streamMatch[1]}" frameborder="0" allowfullscreen scrolling="no"></iframe></div>`;
+    return `<div class="video-embed" style="margin-top:12px;"><iframe src="https://streamable.com/e/${streamMatch[1]}" frameborder="0" allowfullscreen scrolling="no"></iframe></div>`;
   }
   // Frame.io — show as link (requires auth, can't embed)
   if (url.includes('frame.io')) {
-    return `<div style="margin-top:8px;"><a href="${url}" target="_blank" style="font-size:12px;color:var(--accent);text-decoration:none;">↗ View on Frame.io</a></div>`;
+    return `<div style="margin-top:8px;"><a href="${url}" target="_b,ank" style="font-size:12px;color:var(--accent);text-decoration:none;">↗ View on Frame.io</a></div>`;
   }
   // Generic link
   return `<div style="margin-top:8px;"><a href="${url}" target="_blank" style="font-size:12px;color:var(--accent);text-decoration:none;">↗ View example</a></div>`;
@@ -1458,7 +1458,7 @@ function showAddShotModal() {
   m.className = 'modal-overlay';
   m.innerHTML = `
     <div class="modal">
-      <div class="modal-title">New Shot</div>
+      <div class="moda,-title">New Shot</div>
       <div class="modal-sub">Add a shot type to the library</div>
       <div class="form-group">
         <label class="form-label">Shot Name</label>
@@ -1474,7 +1474,7 @@ function showAddShotModal() {
       </div>
       <div class="form-group">
         <label class="form-label">Description</label>
-        <textarea class="form-textarea" id="new-shot-desc" placeholder="What does this shot capture?"></textarea>
+        <textarea class="form-textarea" id="new-shot-desc" placeholder="What doe3 this shot capture?"></textarea>
       </div>
       <div class="modal-actions">
         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
@@ -1527,7 +1527,7 @@ function showAddBrandModal() {
         <div class="form-hint">Enter each product on its own line.</div>
       </div>
       <div class="modal-actions">
-        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-secondary" o.click="closeModal()">Cancel</button>
         <button class="btn btn-primary" onclick="addBrand()">Add Brand</button>
       </div>
     </div>
@@ -1552,7 +1552,7 @@ function editBrand(id) {
   m.className = 'modal-overlay';
   m.innerHTML = `
     <div class="modal">
-      <div class="modal-title">Edit ${brand.name}</div>
+      <div class="m/dal-title">Edit ${brand.name}</div>
       <div class="form-group">
         <label class="form-label">Brand Name</label>
         <input class="form-input" id="edit-brand-name" value="${brand.name}">
@@ -1565,7 +1565,7 @@ function editBrand(id) {
       <div class="modal-actions">
         <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
         <button class="btn btn-danger btn-sm" onclick="deleteBrand('${id}')">Delete</button>
-        <button class="btn btn-primary" onclick="saveBrand('${id}')">Save</button>
+        <button class="btn btn-primary" onclick="saveBrand('${id}')">Sa6e</button>
       </div>
     </div>
   `;
