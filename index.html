@@ -416,6 +416,7 @@
     <div class="user-bar" id="user-bar" style="display:none;">
       <span style="font-size:14px;">👤</span>
       <span class="user-email" id="user-email-display"></span>
+      <button class="logout-btn" onclick="promptForApiKey()" title="Set API Key">🔑</button>
       <button class="logout-btn" onclick="handleLogout()">Sign out</button>
     </div>
     <div class="sidebar-section">Workflow</div>
@@ -6317,7 +6318,23 @@ function toggleBGHookPreview(previewId) {
   panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
 }
 
-const ANTHROPIC_API_KEY = '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';
+// API key stored in localStorage — never commit keys to source code (GitHub revokes them)
+function getAnthropicApiKey() {
+  return localStorage.getItem('st_anthropic_key') || '';
+}
+function setAnthropicApiKey(key) {
+  localStorage.setItem('st_anthropic_key', key);
+}
+function promptForApiKey() {
+  const current = getAnthropicApiKey();
+  const key = prompt('Enter your Anthropic API key:\\n(Get one at console.anthropic.com/settings/keys)', current);
+  if (key && key.trim()) {
+    setAnthropicApiKey(key.trim());
+    showToast('API key saved!');
+    return key.trim();
+  }
+  return current;
+}
 
 // ─── ANGLE FRAMEWORK TEMPLATES ──────────────────────────────────────────────
 // Each angle type gets its own section framework. Sections have:
@@ -6549,7 +6566,7 @@ Write naturally and conversationally. Every line should sound like real street c
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': ANTHROPIC_API_KEY,
+        'x-api-key': getAnthropicApiKey(),
         'anthropic-version': '2023-06-01',
         'anthropic-dangerous-direct-browser-access': 'true',
       },
@@ -6585,6 +6602,11 @@ Write naturally and conversationally. Every line should sound like real street c
 const _generatingProjects = new Set();
 
 async function generateBrief(projectId, _confirmed) {
+  // Check for API key before generating
+  if (!getAnthropicApiKey()) {
+    const key = promptForApiKey();
+    if (!key) { showToast('⚠️ API key required to generate briefs.', 'warning'); return; }
+  }
   const brief = S.briefs.find(b => b.projectId === projectId);
   if (!brief) return;
   if (_generatingProjects.has(projectId)) { showToast('Generation already in progress for this project.'); return; }
@@ -6639,7 +6661,7 @@ async function generateBrief(projectId, _confirmed) {
         console.log('[About] Sending request...');
         const aboutResp = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-api-key': ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+          headers: { 'Content-Type': 'application/json', 'x-api-key': getAnthropicApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
           body: JSON.stringify(aboutBody)
         });
         console.log('[About] Response status:', aboutResp.status);
